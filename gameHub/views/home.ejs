@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home Page</title>
+</head>
+<body>
+
+  <form action="/logout">
+    <input type="submit" value="Logout" />
+  </form>
+
+  <p>Hi <%= username %>,<br />Welcome to the home page!</p>
+  <p>Role: <%= role %></p>
+
+  <% if (role === "admin") { %>
+    <h1>Admin Page</h1>
+    <p>Welcome, Admin!</p>
+    <p>Here is a list of all users:</p>
+    <ul id="user-list"></ul>
+
+    <script>
+      fetch("/admin/users")
+        .then(response => response.json())
+        .then(data => {
+          const userList = document.getElementById("user-list");
+          data.forEach(user => {
+            const li = document.createElement("li");
+            li.innerText = user.username;
+            userList.appendChild(li);
+          });
+        })
+        .catch(error => console.error("Error fetching users:", error));
+    </script>
+  <% } else if (role === "user") { %>
+    <h2>Welcome, regular user!</h2>
+    <!-- You can add more user-specific content here -->
+  <% } %>
+
+</body>
+</html>
+ 
