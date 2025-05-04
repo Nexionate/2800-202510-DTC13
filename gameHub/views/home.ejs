@@ -35,7 +35,14 @@
     </script>
   <% } else if (role === "user") { %>
     <h2>Welcome, regular user!</h2>
-    <!-- You can add more user-specific content here -->
+    
+<button onclick="window.location.href='/yourActiveLobby'">Your Active Lobby</button>
+<button onclick="window.location.href='/searchGames'">Game Search</button>
+<button onclick="window.location.href='/profile'">Profile</button>
+<button onclick="window.location.href='/searchGames'">Search a Game</button>
+<button onclick="window.location.href='/viewLobbies'">View others lobbies</button>
+
+
   <% } %>
 
 </body>

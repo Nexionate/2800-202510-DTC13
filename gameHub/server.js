@@ -121,8 +121,6 @@ const newUser = new userModel({
   password: hashedPassword,
 });
 await newUser.save();
-
-
     res.render("home.ejs", { username: username });
   });
 
@@ -142,5 +140,38 @@ await newUser.save();
        role: req.session.user.role,
      });
   });
+
+app.get("/yourActiveLobby", (req, res) => {
+  res.render("yourActiveLobby.ejs", {
+    username: req.session.user.username,
+    role: req.session.user.role,
+  });
+});
+app.get("/createLobby", (req, res) => {
+  res.render("createLobby.ejs", {
+    username: req.session.user.username,
+    role: req.session.user.role,
+  });
+});
+app.get("/profile", (req, res) => {
+  res.render("profile.ejs", {
+    username: req.session.user.username,
+    role: req.session.user.role,
+  });
+});
+app.get("/searchGames", (req, res) => {
+  res.render("searchGames.ejs", {
+    username: req.session.user.username,
+    role: req.session.user.role,
+  });
+});
+app.get("/viewLobbies", (req, res) => {
+  res.render("viewLobbies.ejs", {
+    username: req.session.user.username,
+    role: req.session.user.role,
+  });
+});
+
+
 
 }
