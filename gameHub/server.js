@@ -23,7 +23,7 @@ main().catch((err) => console.log(err));
 
 async function main() {
 
-    await mongoose.connect("mongodb://127.0.0.1:27017/GameHub");
+  await mongoose.connect("mongodb://127.0.0.1:27017/GameHub");
   const isAdmin = (req, res, next) => {
     if (req.session && req.session.user && req.session.user.role === "admin") {
       return next();
@@ -53,7 +53,7 @@ async function main() {
   });
   const SALT_ROUNDS = 10;
 
- 
+
 
   app.use(
     session({
@@ -91,7 +91,7 @@ async function main() {
     if (!user) {
       return res.status(400).json({ message: "User not found!" });
     }
-  
+
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (passwordMatch) {
       req.session.user = user;
@@ -110,17 +110,17 @@ async function main() {
   app.post("/register", async (req, res) => {
     const { username, password } = req.body;
 
-    const userExists = await userModel.findOne({username});
+    const userExists = await userModel.findOne({ username });
     if (userExists) {
       return res.status(400).json({ message: "Username already taken!" });
     }
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
 
-const newUser = new userModel({
-  username: username,
-  password: hashedPassword,
-});
-await newUser.save();
+    const newUser = new userModel({
+      username: username,
+      password: hashedPassword,
+    });
+    await newUser.save();
     res.render("home.ejs", { username: username });
   });
 
@@ -135,42 +135,48 @@ await newUser.save();
   app.use(isAuthenticated);
 
   app.get("/home", (req, res) => {
-     res.render("home.ejs", {
-       username: req.session.user.username,
-       role: req.session.user.role,
-     });
+    res.render("home.ejs", {
+      username: req.session.user.username,
+      role: req.session.user.role,
+    });
   });
 
-app.get("/yourActiveLobby", (req, res) => {
-  res.render("yourActiveLobby.ejs", {
-    username: req.session.user.username,
-    role: req.session.user.role,
+  app.get("/yourActiveLobby", (req, res) => {
+    res.render("yourActiveLobby.ejs", {
+      username: req.session.user.username,
+      role: req.session.user.role,
+    });
   });
-});
-app.get("/createLobby", (req, res) => {
-  res.render("createLobby.ejs", {
-    username: req.session.user.username,
-    role: req.session.user.role,
+  app.get("/createLobby", (req, res) => {
+    res.render("createLobby.ejs", {
+      username: req.session.user.username,
+      role: req.session.user.role,
+    });
   });
-});
-app.get("/profile", (req, res) => {
-  res.render("profile.ejs", {
-    username: req.session.user.username,
-    role: req.session.user.role,
+  app.get("/profile", (req, res) => {
+    res.render("profile.ejs", {
+      username: req.session.user.username,
+      role: req.session.user.role,
+    });
   });
-});
-app.get("/searchGames", (req, res) => {
-  res.render("searchGames.ejs", {
-    username: req.session.user.username,
-    role: req.session.user.role,
+  app.get("/searchGames", (req, res) => {
+    res.render("searchGames.ejs", {
+      username: req.session.user.username,
+      role: req.session.user.role,
+    });
   });
-});
-app.get("/viewLobbies", (req, res) => {
-  res.render("viewLobbies.ejs", {
-    username: req.session.user.username,
-    role: req.session.user.role,
+  app.get("/viewLobbies", (req, res) => {
+    res.render("viewLobbies.ejs", {
+      username: req.session.user.username,
+      role: req.session.user.role,
+    });
   });
-});
+  app.get("/gameDescription", (req, res) => {
+    res.render("gameDescription.ejs", {
+      username: req.session.user.username,
+      role: req.session.user.role,
+    });
+  });
 
 
 
