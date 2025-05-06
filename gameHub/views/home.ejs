@@ -49,6 +49,7 @@
           });
         })
         .catch(error => console.error("Error fetching users:", error));
+        
     </script>
   <% } else if (role === "user") { %>
     <!-- <h2>Welcome, regular user!</h2> -->
@@ -70,6 +71,30 @@
     <p class="justify-between font-semibold text-xl ">
       Popular titles
     </p>
+    <head>
+</head>
+
+  <!-- Display top 10 games -->
+<div class="px-8 py-4">
+  <h2 class="text-2xl font-bold">Top 10 Popular Games</h2>
+
+  <% if (games && games.length > 0) { %>
+    <ul class="space-y-6 pt-4">
+      <% games.forEach(game => { %>
+        <li class="border p-4 rounded-xl">
+          <h3 class="text-xl font-semibold"><%= game.name %></h3>
+          <p>Rating: <%= game.rating %></p>
+          <% if (game.background_image) { %>
+            <img src="<%= game.background_image %>" alt="<%= game.name %>" width="300" />
+          <% } %>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <p>No games available.</p>
+  <% } %>
+
+
     <p class="justify-between text-slate-400 text-sm pb-4">
       See what people are playing!
     </p>
@@ -97,6 +122,9 @@
 </div>
 
   <% } %>
+
+</div>
+
 
 </body>
 </html>
