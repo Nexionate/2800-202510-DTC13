@@ -5,6 +5,9 @@ const bcrypt = require("bcrypt");
 const app = express();
 
 // api key: f61c15c68f3246a3aeebcfa53cdef84f
+
+const apiKey = "f61c15c68f3246a3aeebcfa53cdef84f";
+
 const userSchema = new mongoose.Schema(
   {
     username: String,
@@ -134,12 +137,30 @@ async function main() {
 
   app.use(isAuthenticated);
 
-  app.get("/home", (req, res) => {
-    res.render("home.ejs", {
-      username: req.session.user.username,
-      role: req.session.user.role,
+app.get("/home", async (req, res) => {
+  try {
+const response = await fetch(
+  `https://api.rawg.io/api/games?key=${apiKey}&tags=co-op&ordering=-rating&page_size=10`
+);
+
+
+    const data = await response.json();
+    const topGames = data.results;
+
+    // Make sure session has user info
+    const user = req.session.user || {};
+
+    res.render("home", {
+      games: topGames,
+      role: user.role,
+      username: user.username,
     });
-  });
+  } catch (error) {
+    console.error("Fetch error:", error);
+    res.status(500).send("Error fetching games");
+  }
+});
+
 
   app.get("/yourActiveLobby", (req, res) => {
     res.render("yourActiveLobby.ejs", {
@@ -177,8 +198,6 @@ async function main() {
       role: req.session.user.role,
     });
   });
-
-
 
 
 }
