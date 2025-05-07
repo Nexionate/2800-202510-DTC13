@@ -192,12 +192,11 @@ const response = await fetch(
       role: req.session.user.role,
     });
   });
-  app.get("/gameDescription", (req, res) => {
-    res.render("gameDescription.ejs", {
-      username: req.session.user.username,
-      role: req.session.user.role,
-    });
-  });
+app.get("/gameDescription/:id", (req, res) => {
+  const gameId = req.params.id;
+  res.render("gameDescription", { gameId });
+});
+
 
 
 }
