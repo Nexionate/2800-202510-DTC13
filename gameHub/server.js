@@ -198,5 +198,12 @@ app.get("/gameDescription/:id", (req, res) => {
 });
 
 
+  app.get("/allGames", (req, res) => {
+    res.render("allGames.ejs", {
+      username: req.session.user.username,
+      role: req.session.user.role,
+    });
+  });
+
 
 }
