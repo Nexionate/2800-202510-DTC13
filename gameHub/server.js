@@ -1,67 +1,61 @@
-const express = require("express");
-var session = require("express-session");
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const express = require('express');
+var session = require('express-session');
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 const app = express();
 
 // api key: f61c15c68f3246a3aeebcfa53cdef84f
 
-const apiKey = "f61c15c68f3246a3aeebcfa53cdef84f";
+const apiKey = 'f61c15c68f3246a3aeebcfa53cdef84f';
 
-const userSchema = new mongoose.Schema(
-  {
-    username: String,
-    password: String,
-    region: String,
-    role: {
-      type: String,
-      enum: ['admin', 'user'],
-      default: 'user'
-    }
-  }
-);
-const userModel = new mongoose.model('users', userSchema)
-
+const userSchema = new mongoose.Schema({
+  username: String,
+  password: String,
+  region: String,
+  role: {
+    type: String,
+    enum: ['admin', 'user'],
+    default: 'user',
+  },
+});
+const userModel = new mongoose.model('users', userSchema);
 
 main().catch((err) => console.log(err));
 
 async function main() {
-
-  await mongoose.connect("mongodb://127.0.0.1:27017/GameHub");
+  await mongoose.connect('mongodb://127.0.0.1:27017/GameHub');
   const isAdmin = (req, res, next) => {
-    if (req.session && req.session.user && req.session.user.role === "admin") {
+    if (req.session && req.session.user && req.session.user.role === 'admin') {
       return next();
     } else {
-      res.status(403).send("Forbidden");
+      res.status(403).send('Forbidden');
     }
   };
 
-  app.get("/users", async (req, res) => {
+  app.get('/users', async (req, res) => {
     try {
-      const users = await userModel.find({ role: "user" }); // returns only normal users
+      const users = await userModel.find({ role: 'user' }); // returns only normal users
       res.json(users);
     } catch (err) {
-      console.error("DB error:", err);
-      res.status(500).json({ error: "Database error" });
+      console.error('DB error:', err);
+      res.status(500).json({ error: 'Database error' });
     }
   });
 
-  app.get("/admin/users", isAdmin, async (req, res) => {
+  app.get('/admin/users', isAdmin, async (req, res) => {
     try {
-      const usersFound = await userModel.find({ role: "user" });
+      const usersFound = await userModel.find({ role: 'user' });
 
       res.json(usersFound);
     } catch (error) {
-      console.log("db error", error);
+      console.log('db error', error);
     }
   });
   const SALT_ROUNDS = 10;
 
-
-
   app.use(
     session({
-      secret: "keyboard cat",
+      secret: 'keyboard cat',
       resave: true,
       saveUninitialized: true,
       cookie: { secure: false },
@@ -70,53 +64,50 @@ async function main() {
 
   const port = 3000;
 
-  app.set("view engine", "ejs");
+  app.set('view engine', 'ejs');
 
   app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
   });
 
-  app.get("/", (req, res) => {
-    res.redirect("/home");
+  app.get('/', (req, res) => {
+    res.redirect('/home');
   });
 
-  app.get("/login", (req, res) => {
-    res.sendFile(__dirname + "/login.html");
+  app.get('/login', (req, res) => {
+    res.sendFile(__dirname + '/login.html');
   });
-
-
 
   app.use(express.urlencoded({ extended: true }));
 
-  app.post("/login", async (req, res) => {
+  app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
     const user = await userModel.findOne({ username: username });
     if (!user) {
-      return res.status(400).json({ message: "User not found!" });
+      return res.status(400).json({ message: 'User not found!' });
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (passwordMatch) {
       req.session.user = user;
-      res.redirect("/home");
+      res.redirect('/home');
     } else {
-      res.status(401).json({ message: "Invalid credentials!" });
+      res.status(401).json({ message: 'Invalid credentials!' });
     }
   });
 
-
-  app.get("/logout", async (req, res) => {
+  app.get('/logout', async (req, res) => {
     req.session.destroy();
-    res.redirect("/login");
+    res.redirect('/login');
   });
 
-  app.post("/register", async (req, res) => {
+  app.post('/register', async (req, res) => {
     const { username, password } = req.body;
 
     const userExists = await userModel.findOne({ username });
     if (userExists) {
-      return res.status(400).json({ message: "Username already taken!" });
+      return res.status(400).json({ message: 'Username already taken!' });
     }
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
 
@@ -125,86 +116,106 @@ async function main() {
       password: hashedPassword,
     });
     await newUser.save();
-    res.render("home.ejs", { username: username });
+    res.render('home.ejs', { username: username });
   });
 
   const isAuthenticated = (req, res, next) => {
     if (req.session && req.session.user) {
       return next();
     } else {
-      res.redirect("/login");
+      res.redirect('/login');
     }
   };
 
   app.use(isAuthenticated);
 
-app.get("/home", async (req, res) => {
-  try {
-const response = await fetch(
-  `https://api.rawg.io/api/games?key=${apiKey}&tags=co-op&ordering=-rating&page_size=10`
-);
+  app.get('/home', async (req, res) => {
+    try {
+      const response = await fetch(
+        `https://api.rawg.io/api/games?key=${apiKey}&tags=co-op&ordering=-rating&page_size=10`
+      );
 
+      const data = await response.json();
+      const topGames = data.results;
+
+      // Make sure session has user info
+      const user = req.session.user || {};
+
+      res.render('home', {
+        games: topGames,
+        role: user.role,
+        username: user.username,
+      });
+    } catch (error) {
+      console.error('Fetch error:', error);
+      res.status(500).send('Error fetching games');
+    }
+  });
+
+  app.get('/yourActiveLobby', (req, res) => {
+    res.render('yourActiveLobby.ejs', {
+      username: req.session.user.username,
+      role: req.session.user.role,
+    });
+  });
+  app.get('/createLobby', (req, res) => {
+    res.render('createLobby.ejs', {
+      username: req.session.user.username,
+      role: req.session.user.role,
+    });
+  });
+  app.get('/profile', (req, res) => {
+    res.render('profile.ejs', {
+      username: req.session.user.username,
+      role: req.session.user.role,
+    });
+  });
+  app.get('/searchGames', (req, res) => {
+    res.render('searchGames.ejs', {
+      username: req.session.user.username,
+      role: req.session.user.role,
+    });
+  });
+  app.get('/viewLobbies', (req, res) => {
+    res.render('viewLobbies.ejs', {
+      username: req.session.user.username,
+      role: req.session.user.role,
+    });
+  });
+  app.get('/gameDescription/:id', (req, res) => {
+    const gameId = req.params.id;
+    res.render('gameDescription', { gameId });
+  });
+
+  app.get('/allGames', (req, res) => {
+    res.render('allGames.ejs', {
+      username: req.session.user.username,
+      role: req.session.user.role,
+    });
+  });
+}
+
+app.get('/search/:game', async (req, res) => {
+  try {
+    searchName = req.params.game;
+    const response = await fetch(
+      `https://api.rawg.io/api/games?key=${apiKey}&tags=co-op&search=${searchName}`
+    );
+
+    if (!response.ok) throw new Error('Failed to fetch from RAWG API');
 
     const data = await response.json();
-    const topGames = data.results;
+    const games = data.results;
 
+    res.redirect('/allGames');
     // Make sure session has user info
     const user = req.session.user || {};
-
-    res.render("home", {
-      games: topGames,
-      role: user.role,
-      username: user.username,
+    res.render('allGames', {
+      games,
+      filter: { name },
     });
   } catch (error) {
-    console.error("Fetch error:", error);
-    res.status(500).send("Error fetching games");
+    console.error('Fetch error:', error);
+    res.status(500).send('Error fetching games');
   }
 });
-
-
-  app.get("/yourActiveLobby", (req, res) => {
-    res.render("yourActiveLobby.ejs", {
-      username: req.session.user.username,
-      role: req.session.user.role,
-    });
-  });
-  app.get("/createLobby", (req, res) => {
-    res.render("createLobby.ejs", {
-      username: req.session.user.username,
-      role: req.session.user.role,
-    });
-  });
-  app.get("/profile", (req, res) => {
-    res.render("profile.ejs", {
-      username: req.session.user.username,
-      role: req.session.user.role,
-    });
-  });
-  app.get("/searchGames", (req, res) => {
-    res.render("searchGames.ejs", {
-      username: req.session.user.username,
-      role: req.session.user.role,
-    });
-  });
-  app.get("/viewLobbies", (req, res) => {
-    res.render("viewLobbies.ejs", {
-      username: req.session.user.username,
-      role: req.session.user.role,
-    });
-  });
-app.get("/gameDescription/:id", (req, res) => {
-  const gameId = req.params.id;
-  res.render("gameDescription", { gameId });
-});
-
-
-  app.get("/allGames", (req, res) => {
-    res.render("allGames.ejs", {
-      username: req.session.user.username,
-      role: req.session.user.role,
-    });
-  });
-
-
-}
