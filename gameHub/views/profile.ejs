@@ -5,69 +5,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 
 <body>
-    <p1> Viewing Your Profile </p1>
-    <p>Username: <%= username %>
-            <p>Role: <%= role %>
-                    <p>Region: <span id="location">None</span></p>
-                    <button onclick="getLocation()">Auto-Assign Region</button>
+    <div class="flex flex-row justify-center pt-5 text-md text-slate-500 space-x-5 pb-3">
+        <button class="px-3" onclick="window.location.href='/home'">Home</button>
+        <button class="px-3" onclick="window.location.href='/profile'">Profile</button>
+        <form class="px-3" action="/logout">
+            <input type="submit" value="Logout" />
+        </form>
+
+    </div>
+    <div class="space-y-4 px-5 py-2">
+        <p1 class="text-2xl font-bold ">Your Profile</p1>
+        <p>Username: <span class="text-slate-400"><%= username %></span>
+        </p>
+        <p>Role: <span class="text-slate-400"><%= role %></span>
+                <p>Region:
+                    <span class="text-slate-400" id="location">None</span>
+                </p>
+        </p>
+        <button
+            class="bg-slate-700 px-4 py-2 rounded-xl text-white hover:bg-slate-500 transition hover:scale-[1.01] ease-in-out"
+            onclick="getLocation()">Find location</button>
+
+    </div>
 
 
-                    <script>
-                        function getLocation() {
-                            // Check if geolocation is supported
-                            if (navigator.geolocation) {
-                                navigator.geolocation.getCurrentPosition(showPosition, showError);
-                            } else {
-                                document.getElementById("location").innerText = "Geolocation is not supported by this browser.";
-                            }
-                        }
+    <script>
+        function getLocation() {
+            // Check if geolocation is supported
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                document.getElementById("location").innerText = "Geolocation is not supported by this browser.";
+            }
+        }
 
-                        function showPosition(position) {
-                            const lat = position.coords.latitude;
-                            const lon = position.coords.longitude;
-                            const region = getRegion(lat, lon);
-                            document.getElementById("location").innerText = `${region}`;
-                            console.log("Position Shown");
-                        }
+        function showPosition(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            const region = getRegion(lat, lon);
+            document.getElementById("location").innerText = `${region}`;
+            console.log("Position Shown");
+        }
 
-                        function getRegion(lat, lon) {
-                            if (lat >= 15 && lat <= 72 && lon >= -170 && lon <= -50) {
-                                return "North America";
-                            } else if (lat >= -60 && lat <= 15 && lon >= -90 && lon <= -30) {
-                                return "South America";
-                            } else if (lat >= 35 && lat <= 70 && lon >= -10 && lon <= 60) {
-                                return "Europe";
-                            } else if (lat >= 5 && lat <= 80 && lon >= 60 && lon <= 180) {
-                                return "Asia";
-                            } else if (lat >= -50 && lat <= 0 && lon >= 110 && lon <= 180) {
-                                return "Oceania";
-                            } else {
-                                return "Unknown Region";
-                            }
-                        }
+        function getRegion(lat, lon) {
+            if (lat >= 15 && lat <= 72 && lon >= -170 && lon <= -50) {
+                return "North America";
+            } else if (lat >= -60 && lat <= 15 && lon >= -90 && lon <= -30) {
+                return "South America";
+            } else if (lat >= 35 && lat <= 70 && lon >= -10 && lon <= 60) {
+                return "Europe";
+            } else if (lat >= 5 && lat <= 80 && lon >= 60 && lon <= 180) {
+                return "Asia";
+            } else if (lat >= -50 && lat <= 0 && lon >= 110 && lon <= 180) {
+                return "Oceania";
+            } else {
+                return "Unknown Region";
+            }
+        }
 
-                        function showError(error) {
-                            switch (error.code) {
-                                case error.PERMISSION_DENIED:
-                                    document.getElementById("location").innerText = "User denied the request for Geolocation.";
-                                    break;
-                                case error.POSITION_UNAVAILABLE:
-                                    document.getElementById("location").innerText = "Location information is unavailable.";
-                                    break;
-                                case error.TIMEOUT:
-                                    document.getElementById("location").innerText = "The request to get user location timed out.";
-                                    break;
-                                case error.UNKNOWN_ERROR:
-                                    document.getElementById("location").innerText = "An unknown error occurred.";
-                                    break;
-                            }
-                        }
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    document.getElementById("location").innerText = "User denied the request for Geolocation.";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    document.getElementById("location").innerText = "Location information is unavailable.";
+                    break;
+                case error.TIMEOUT:
+                    document.getElementById("location").innerText = "The request to get user location timed out.";
+                    break;
+                case error.UNKNOWN_ERROR:
+                    document.getElementById("location").innerText = "An unknown error occurred.";
+                    break;
+            }
+        }
 
-                    </script>
+    </script>
 </body>
 
 </html>
