@@ -2,75 +2,40 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Description</title>
-    <script>
-        const gameId = '3498'; // Example game ID for "Grand Theft Auto V"
-        const apiKey = 'f61c15c68f3246a3aeebcfa53cdef84f'; // 
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Game Description</title>
+  <script>
+    const gameId = "<%= gameId %>"; 
+    const apiKey = 'f61c15c68f3246a3aeebcfa53cdef84f';
 
-        // fetch(`https://api.rawg.io/api/games/${gameId}?key=${apiKey}`)
-        //     .then(response => {
-        //         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-        //         return response.json();
-        //     })
-        //     .then(response => response.json())
-        //     .then(data => {
-        //         console.log(111);
-        //         document.getElementById('game-title').textContent = data.name;
-        //         document.getElementById('game-image').src = data.background_image;
-        //         document.getElementById('game-description').innerHTML = data.description;
-        //     })
-        //     .catch(error => {
-        //         console.log(444);
-        //         console.error('Error fetching game data:', error);
-        //     });
-       // let descriptionHTML = data.description;
-
-            // Use split to remove everything after "Español" section heading
-            //let cleanedDescription = descriptionHTML.split('<h2>Español</h2>')[0];
-
-            // Set to the page
-            //document.getElementById('game-description').innerHTML = cleanedDescription || 'No description available.';
-
-        fetch(`https://api.rawg.io/api/games/${gameId}?key=${apiKey}`)
-                .then(response => {
-                    console.log('Response:', response);  // Log the response object
-
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-
-                    return response.text();  // Attempt to parse as text to inspect
-                })
-                .then(text => {
-                    console.log('Response Text:', text);  // Log the raw response text
-                    try {
-                        const data = JSON.parse(text);  // Manually parse it as JSON
-                        let descriptionHTML = data.description;
-                        let cleanedDescription = descriptionHTML.split('Español')[0];
-                        document.getElementById('game-title').textContent = data.name;
-                        document.getElementById('game-image').src = data.background_image;
-                        document.getElementById('game-description').innerHTML = cleanedDescription || 'No description available.';
-                    } catch (e) {
-                        console.error('Failed to parse JSON:', e);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching game data:', error);
-                });
-    </script>
+    fetch(`https://api.rawg.io/api/games/${gameId}?key=${apiKey}`)
+      .then(response => {
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        return response.json();
+      })
+      .then(data => {
+        const descriptionHTML = data.description || '';
+        const cleanedDescription = descriptionHTML.split('Español')[0];
+        document.getElementById('game-title').textContent = data.name;
+        document.getElementById('game-image').src = data.background_image;
+        document.getElementById('game-description').innerHTML = cleanedDescription || 'No description available.';
+      })
+      .catch(error => {
+        console.error('Error fetching game data:', error);
+      });
+  </script>
 </head>
 
+ <button onclick="window.location.href='/home'">Home</button>
+
 <body>
-    <h1 id="game-title"></h1>
-    <img id="game-image" src="" alt="Game image" style="max-width:300px;" />
-    <p id="game-description"></p>
+  <h1 id="game-title"></h1>
+  <img id="game-image" src="" alt="Game image" style="max-width:300px;" />
+  <p id="game-description"></p>
 
-    <button onclick="window.location.href='/createLobby'">Create Lobby</button>
-    <button onclick="window.location.href='/viewLobbies'">Join Lobby</button>
-
-
+  <button onclick="window.location.href='/createLobby'">Create Lobby</button>
+  <button onclick="window.location.href='/viewLobbies'">Join Lobby</button>
 </body>
 
 </html>
