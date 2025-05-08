@@ -27,37 +27,62 @@
                 <%= role %>
             </span>
         <p>Region:
-            <span class="text-slate-400" id="location">None</span>
+        <p class="text-slate-400" id="location">Your region will appear here.</p>
         </p>
         </p>
+
+
         <form action="" method="post">
-            <button
+            <button type="button"
                 class="bg-slate-700 px-4 py-2 rounded-xl text-white hover:bg-slate-500 transition hover:scale-[1.01] ease-in-out"
-                onclick="getLocation()">Find location
+                onclick="getLocation()">
+                Find location
             </button>
         </form>
-
 
     </div>
 
 
     <script>
         function getLocation() {
-            // Check if geolocation is supported
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition, showError);
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    const region = getRegion(lat, lon);
+
+                    document.getElementById("location").innerText = region;
+
+                    // Send to backend
+                    try {
+                        const res = await fetch("/profile", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({ location: region })
+                        });
+
+                        if (res.ok) {
+                            console.log("Region sent successfully");
+                        } else {
+                            console.error("Failed to send region");
+                        }
+                    } catch (err) {
+                        console.error("Error sending location:", err);
+                    }
+                }, showError);
             } else {
                 document.getElementById("location").innerText = "Geolocation is not supported by this browser.";
             }
         }
 
-        function showPosition(position) {
-            const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
-            const region = getRegion(lat, lon);
-            document.getElementById("location").innerText = `${region}`;
-            console.log("Position Shown");
-        }
+        // function showPosition(position) {
+        //     const lat = position.coords.latitude;
+        //     const lon = position.coords.longitude;
+        //     const region = getRegion(lat, lon);
+        //     document.getElementById("location").innerText = `${region}`;
+        // }
 
         function getRegion(lat, lon) {
             if (lat >= 15 && lat <= 72 && lon >= -170 && lon <= -50) {

@@ -5,6 +5,8 @@ const bcrypt = require('bcrypt');
 const app = express();
 
 const path = require('path');
+const { type } = require('os');
+
 
 // api key: f61c15c68f3246a3aeebcfa53cdef84f
 
@@ -20,7 +22,11 @@ const userSchema = new mongoose.Schema({
     default: 'user',
   },
   activeLobbiesIn: [String],
-  userReigion: String,
+  userRegion: {
+    type: String,
+    default: null,
+  },
+  displayName: String,
 });
 const userModel = new mongoose.model('users', userSchema);
 
@@ -29,6 +35,7 @@ main().catch((err) => console.log(err));
 async function main() {
   await mongoose.connect('mongodb://127.0.0.1:27017/GameHub');
   app.use(express.static(path.join(__dirname, 'public')));
+  app.use(express.json());
 
   const isAdmin = (req, res, next) => {
     if (req.session && req.session.user && req.session.user.role === 'admin') {
@@ -90,12 +97,23 @@ async function main() {
     const { username, password } = req.body;
 
     const user = await userModel.findOne({ username: username });
+
+    if (user.displayName == null) {
+      await userModel.updateOne(
+        { username },
+        { $set: { displayName: username } }
+      );
+
+    }
     if (!user) {
+
       return res.status(400).json({ message: 'User not found!' });
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
+
     if (passwordMatch) {
+
       req.session.user = user;
       res.redirect('/home');
     } else {
@@ -354,44 +372,26 @@ async function main() {
   app.post("/profile", async (req, res) => {
     try {
       const { location } = req.body;
-      console.log(location);
+      console.log("Location received:", location);
 
-      const username = req.session.user.username
+      const username = req.session?.user?.username;
+      console.log("Username from session:", username);
 
       await userModel.updateOne(
         { username },
-        { $addToSet: { userReigion: location } }
+        { $set: { userRegion: location } }
       );
 
+      res.status(200).send("Profile updated");
     } catch (err) {
+      console.log(err);
       res.status(500).send("DB error");
     }
 
 
   })
 
-  function showPosition(position) {
-    const lat = position.coords.latitude;
-    const lon = position.coords.longitude;
-    const region = getRegion(lat, lon);
-    return region;
-  }
 
-  function getRegion(lat, lon) {
-    if (lat >= 15 && lat <= 72 && lon >= -170 && lon <= -50) {
-      return "North America";
-    } else if (lat >= -60 && lat <= 15 && lon >= -90 && lon <= -30) {
-      return "South America";
-    } else if (lat >= 35 && lat <= 70 && lon >= -10 && lon <= 60) {
-      return "Europe";
-    } else if (lat >= 5 && lat <= 80 && lon >= 60 && lon <= 180) {
-      return "Asia";
-    } else if (lat >= -50 && lat <= 0 && lon >= 110 && lon <= 180) {
-      return "Oceania";
-    } else {
-      return "Unknown Region";
-    }
-  }
 }
 
 app.get('/search/:game', async (req, res) => {
