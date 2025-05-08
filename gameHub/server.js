@@ -198,11 +198,9 @@ async function main() {
   app.post('/search', async (req, res) => {
     try {
       searchName = req.body.search;
-      const { name } = req.query;
-
       const response = await fetch(
         `https://api.rawg.io/api/games?key=${apiKey}&tags=co-op&search=${encodeURIComponent(
-          name
+          searchName
         )}`
       );
 
@@ -211,13 +209,14 @@ async function main() {
       const data = await response.json();
       const games = data.results;
 
-      // Make sure session has user info
+      // Make sure session has user info. This information is passed to allGames.ejs
       const user = req.session.user || {};
       res.render('allGames.ejs', {
         username: req.session.user.username,
         role: req.session.user.role,
         games,
-        filters: { name },
+        filters: { name: searchName },
+        searchName,
       });
     } catch (error) {
       console.error('Fetch error:', error);

@@ -132,7 +132,14 @@
 
     <div id="sidebar">
       <h3>Filter Games</h3>
-
+      <form action="/search" method="post">
+        <input
+          type="text"
+          name="search"
+          placeholder="Search..."
+          class="border-1 border-black w-full rounded-lg"
+        />
+      </form>
       <label for="genre">Genre:</label>
       <select id="genre">
         <option value="">All</option>
@@ -147,6 +154,31 @@
       </select>
 
       <button id="applyFilters">Apply Filters</button>
+    </div>
+
+    <h1>Results for "<%= filters.name %>"</h1>
+
+    <div class="games-list">
+      <!-- Debug code -->
+      <!-- <pre><%= JSON.stringify(games, null, 2) %></pre> -->
+
+      <% if (games.length === 0) { %>
+      <p>No games found.</p>
+      <% } else { %> <% games.forEach(game => { %>
+      <div class="game-card">
+        <!-- Need styling here -->
+        <h2><%= game.name %></h2>
+        <% if (game.background_image) { %>
+        <img
+          src="<%= game.background_image %>"
+          alt="<%= game.name %>"
+          width="300"
+        />
+        <% } else { %>
+        <p>No image available.</p>
+        <% } %>
+      </div>
+      <% }); %> <% } %>
     </div>
 
     <div id="game-grid"></div>
