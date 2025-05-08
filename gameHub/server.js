@@ -195,11 +195,16 @@ async function main() {
   });
 }
 
-app.get('/search/:game', async (req, res) => {
+app.get('/search', async (req, res) => {
   try {
     searchName = req.params.game;
+    const { name } = req.query;
+    // optional redirection
+    if (!name) return res.redirect('/home');
     const response = await fetch(
-      `https://api.rawg.io/api/games?key=${apiKey}&tags=co-op&search=${searchName}`
+      `https://api.rawg.io/api/games?key=${apiKey}&tags=co-op&search=${encodeURIComponent(
+        name
+      )}`
     );
 
     if (!response.ok) throw new Error('Failed to fetch from RAWG API');
@@ -207,12 +212,13 @@ app.get('/search/:game', async (req, res) => {
     const data = await response.json();
     const games = data.results;
 
-    res.redirect('/allGames');
     // Make sure session has user info
     const user = req.session.user || {};
-    res.render('allGames', {
+    res.render('allGames.ejs', {
+      username: req.session.user.username,
+      role: req.session.user.role,
       games,
-      filter: { name },
+      filters: { name },
     });
   } catch (error) {
     console.error('Fetch error:', error);
