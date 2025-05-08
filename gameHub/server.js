@@ -266,39 +266,64 @@ async function main() {
   app.post("/createLobby", async (req, res) => {
     await handleCreateLobby(req, res, undefined); 
   });
+
+    app.get("/api/allLobbies", async (req, res) => {
+      try {
+        const lobbies = await Lobby.find({});
+        res.json(lobbies);
+      } catch (err) {
+        console.error("Error fetching all lobbies:", err.message);
+        res.status(500).send("Internal server error");
+      }
+    });
   
-  async function handleCreateLobby(req, res, gameID) {
-    try {
-      const { gameName, lobbyName, numPlayers, password, tags } = req.body;
-      const user = req.session.user;
+async function handleCreateLobby(req, res, gameID) {
+  try {
+    const { gameName, lobbyName, numPlayers, password, tags } = req.body;
+    const user = req.session.user;
+
+    if (!user) return res.status(401).send("User not authenticated");
+
+    const username = user.username;
+    const tagList = (Array.isArray(tags) ? tags : [tags]).filter(Boolean); // Removes null
+    const lobbyId = generateLobbyId();
+    const userList = [username];
+    const owner = username;
+
+    const newLobby = new Lobby({
+      lobbyId,
+      lobbyName,
+      gameName,
+      numPlayers,
+      tags: tagList,
+      gameID,
+      user: userList,
+      password,
+      owner,
+    });
+
+    await newLobby.save();
+
   
-      if (!user) return res.status(401).send("User not authenticated");
-  
-      const username = user.username;
-      const tagList = Array.isArray(tags) ? tags : [tags]; 
-      const lobbyId = generateLobbyId();
-      const userList = [username];
-      const owner = username;
-  
-      const newLobby = new Lobby({
-        lobbyId,
-        lobbyName,
-        gameName,
-        numPlayers,
-        tags: tagList,
-        gameID,
-        user: userList,
-        password,
-        owner
-      });
-  
-      await newLobby.save();
-      return res.redirect(`/yourActiveLobby/${lobbyId}`); 
-    } catch (error) {
-      console.error("Error creating lobby:", error);
-      return res.redirect(`/createLobby${gameID ? '/' + gameID : ''}?error=${encodeURIComponent("Lobby creation failed")}`);
-    }
+    await userModel.updateOne(
+      { username },
+      { $addToSet: { activeLobbiesIn: lobbyId } }
+    );
+
+
+    return res.redirect(`/yourActiveLobby/${lobbyId}`);
+  } catch (error) {
+    console.error("Error creating lobby:", error);
+    return res.redirect(
+      `/createLobby${gameID ? "/" + gameID : ""}?error=${encodeURIComponent(
+        "Lobby creation failed"
+      )}`
+    );
   }
+
+
+}
+
 
   app.get("/lobbies", async (req, res) => {
     try {
@@ -349,7 +374,28 @@ async function main() {
       res.status(500).send("Server error");
     }
   });
+  app.get("/api/activeLobbies", async (req, res) => {
+    try {
+      const username = req.session?.user?.username;
+      if (!username) return res.status(401).send("Not authenticated");
+
+      const user = await userModel.findOne({ username });
+      if (!user) return res.status(404).send("User not found");
+
+      const activeLobbyIds = user.activeLobbiesIn;
+
+      const lobbies = await Lobby.find({ lobbyId: { $in: activeLobbyIds } });
+      res.json(lobbies);
+    } catch (err) {
+      console.error("Error fetching active lobbies:", err.message);
+      res.status(500).send("Server error");
+    }
+  });
+
 }
+
+
+
 
 app.get('/search/:game', async (req, res) => {
   try {
