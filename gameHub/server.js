@@ -20,6 +20,7 @@ const userSchema = new mongoose.Schema({
     default: 'user',
   },
   activeLobbiesIn: [String],
+  userReigion: String,
 });
 const userModel = new mongoose.model('users', userSchema);
 
@@ -232,7 +233,7 @@ async function main() {
       unique: true
     }
   });
-  
+
   function generateLobbyId(length = 5) {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
@@ -241,13 +242,13 @@ async function main() {
     }
     return result;
   }
-  
-  
-  
+
+
+
   app.use(express.urlencoded({ extended: true }));
-  
+
   const Lobby = mongoose.model("Lobby", lobbySchema);
-  
+
   app.get('/createLobby/:gameId', (req, res) => {
     const gameId = req.params.gameId;
     const error = req.query.error;
@@ -262,24 +263,24 @@ async function main() {
   app.post("/createLobby/:gameId", async (req, res) => {
     await handleCreateLobby(req, res, req.params.gameId);
   });
-  
+
   app.post("/createLobby", async (req, res) => {
-    await handleCreateLobby(req, res, undefined); 
+    await handleCreateLobby(req, res, undefined);
   });
-  
+
   async function handleCreateLobby(req, res, gameID) {
     try {
       const { gameName, lobbyName, numPlayers, password, tags } = req.body;
       const user = req.session.user;
-  
+
       if (!user) return res.status(401).send("User not authenticated");
-  
+
       const username = user.username;
-      const tagList = Array.isArray(tags) ? tags : [tags]; 
+      const tagList = Array.isArray(tags) ? tags : [tags];
       const lobbyId = generateLobbyId();
       const userList = [username];
       const owner = username;
-  
+
       const newLobby = new Lobby({
         lobbyId,
         lobbyName,
@@ -291,9 +292,9 @@ async function main() {
         password,
         owner
       });
-  
+
       await newLobby.save();
-      return res.redirect(`/yourActiveLobby/${lobbyId}`); 
+      return res.redirect(`/yourActiveLobby/${lobbyId}`);
     } catch (error) {
       console.error("Error creating lobby:", error);
       return res.redirect(`/createLobby${gameID ? '/' + gameID : ''}?error=${encodeURIComponent("Lobby creation failed")}`);
@@ -304,51 +305,93 @@ async function main() {
     try {
       const username = req.session?.user?.username;
       console.log("Logged-in user:", username); // <-- Debug check
-  
+
       if (!username) return res.status(401).send("User not authenticated");
-  
+
       const lobbies = await Lobby.find({ user: { $ne: username } });
       console.log("Lobbies found:", lobbies.length); // <-- Debug check
-  
+
       res.json(lobbies)
     } catch (err) {
       console.error("Error fetching lobbies:", err.message);
       res.status(500).send("Internal server error");
     }
   });
-  
+
   app.post("/joinLobby/:id", async (req, res) => {
     try {
       const username = req.session?.user?.username;
       const lobbyId = req.params.id;
-  
+
       if (!username) return res.status(401).send("Not authenticated");
-  
+
       const lobby = await Lobby.findOne({ lobbyId });
       if (!lobby) return res.status(404).send("Lobby not found");
-  
+
       if (lobby.user.includes(username))
         return res.status(400).send("Already in lobby");
-  
+
       if (lobby.user.length >= lobby.numPlayers)
         return res.status(400).send("Lobby is full");
-  
+
       // Add user to lobby
       lobby.user.push(username);
       await lobby.save();
-  
+
       // Add lobby to user's activeLobbiesIn
       await userModel.updateOne(
         { username },
         { $addToSet: { activeLobbiesIn: lobbyId } }
       );
-  
+
       res.send("Joined successfully");
     } catch (err) {
       console.error("Join error:", err);
       res.status(500).send("Server error");
     }
   });
+
+  app.post("/profile", async (req, res) => {
+    try {
+      const { location } = req.body;
+      console.log(location);
+
+      const username = req.session.user.username
+
+      await userModel.updateOne(
+        { username },
+        { $addToSet: { userReigion: location } }
+      );
+
+    } catch (err) {
+      res.status(500).send("DB error");
+    }
+
+
+  })
+
+  function showPosition(position) {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+    const region = getRegion(lat, lon);
+    return region;
+  }
+
+  function getRegion(lat, lon) {
+    if (lat >= 15 && lat <= 72 && lon >= -170 && lon <= -50) {
+      return "North America";
+    } else if (lat >= -60 && lat <= 15 && lon >= -90 && lon <= -30) {
+      return "South America";
+    } else if (lat >= 35 && lat <= 70 && lon >= -10 && lon <= 60) {
+      return "Europe";
+    } else if (lat >= 5 && lat <= 80 && lon >= 60 && lon <= 180) {
+      return "Asia";
+    } else if (lat >= -50 && lat <= 0 && lon >= 110 && lon <= 180) {
+      return "Oceania";
+    } else {
+      return "Unknown Region";
+    }
+  }
 }
 
 app.get('/search/:game', async (req, res) => {
