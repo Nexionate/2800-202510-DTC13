@@ -156,22 +156,5 @@
       <span id="pageNum">Page 1</span>
       <button id="nextPage">Next</button>
     </div>
-
-    <!-- testing home search function -->
-    <div id="testing">
-      <h1>Results for "<%= filters.name %>"</h1>
-      <ul>
-        <% games.forEach(game => { %>
-        <li>
-          <img
-            src="<%= game.background_image %>"
-            alt="<%= game.name %>"
-            width="200"
-          />
-          <p><%= game.name %></p>
-        </li>
-        <% }) %>
-      </ul>
-    </div>
   </body>
 </html>
