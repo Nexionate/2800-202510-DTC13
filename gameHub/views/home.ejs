@@ -125,6 +125,19 @@
           <p>Hi <%= username %>,<br />Welcome to the home page!</p>
           <p>Role: <%= role %></p>
         </div>
+
+        <button
+          class="text-lg bg-slate-700 px-3 py-6 rounded-xl text-white hover:bg-slate-500 transition hover:scale-[1.01] ease-in-out"
+          onclick="window.location.href='/createLobby/0'">
+          Create a Lobby
+        </button>
+
+        <button
+          class="text-lg bg-slate-700 px-3 py-6 rounded-xl text-white hover:bg-slate-500 transition hover:scale-[1.01] ease-in-out"
+          onclick="window.location.href='/viewLobbies'">
+          Join a Lobby
+        </button>
+
         <button
           class="text-lg bg-slate-500 px-3 py-6 rounded-xl text-white hover:bg-slate-400 transition hover:scale-[1.01] ease-in-out"
           onclick="window.location.href='/yourActiveLobby'"
@@ -138,12 +151,12 @@
         >
           Search a Game
         </button>
-<button
-  class="text-lg bg-slate-700 px-3 py-6 rounded-xl text-white hover:bg-slate-500 transition hover:scale-[1.01] ease-in-out"
-  onclick="window.location.href='/viewLobbies'"
->
-  View others lobbies
-</button>
+        <button
+          class="text-lg bg-slate-700 px-3 py-6 rounded-xl text-white hover:bg-slate-500 transition hover:scale-[1.01] ease-in-out"
+          onclick="window.location.href='/viewLobbies'"
+        >
+          View others lobbies
+        </button>
 
       </div>
 
