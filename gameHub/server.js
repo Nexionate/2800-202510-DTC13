@@ -140,6 +140,7 @@ async function main() {
       password: hashedPassword,
     });
     await newUser.save();
+    console.log(newUser.role);
     res.render('home.ejs', { username: username });
   });
 
@@ -167,11 +168,12 @@ async function main() {
 
       res.render('home', {
         games: topGames,
-        role: user.role,
+        role: req.session.user.role,
         username: user.username,
       });
     } catch (error) {
       console.error('Fetch error:', error);
+      console.log("help");
       res.status(500).send('Error fetching games');
     }
   });
@@ -188,11 +190,23 @@ async function main() {
       role: req.session.user.role,
     });
   });
-  app.get('/profile', (req, res) => {
-    res.render('profile.ejs', {
-      username: req.session.user.username,
-      role: req.session.user.role,
-    });
+  app.get('/profile', async (req, res) => {
+    try {
+      const username = req.session?.user?.username;
+      const user = await userModel.findOne({ username });
+
+      if (!user) return res.status(404).send("User not found");
+      // this is done because if you edit and save the display name, it will be outdated since its pulling from
+      res.render('profile.ejs', {
+        username: req.session.user.username,
+        role: req.session.user.role,
+        displayName: user.displayName,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Failed to load profile");
+    }
+    
   });
   app.get('/searchGames', (req, res) => {
     res.render('searchGames.ejs', {
@@ -368,6 +382,33 @@ async function main() {
       res.status(500).send("Server error");
     }
   });
+
+  app.post("/editDisplayName", async (req, res) => {
+    try {
+      const newName = req.body.displayName;
+      console.log("new display name:", newName);
+
+      const username = req.session?.user?.username;
+      try{
+        //update to make more resilient later
+        if (newName != null){
+          await userModel.updateOne(
+            { username },
+            { $set: { displayName: newName } }
+          );
+        }
+         
+        
+      } catch (err) {
+        console.error(err);
+      }
+      res.redirect("/profile");
+    }
+    catch (error) {
+      console.error('Fetch error:', error);
+
+    }
+})
 
   app.post("/profile", async (req, res) => {
     try {

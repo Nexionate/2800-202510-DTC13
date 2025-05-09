@@ -23,11 +23,22 @@
                 <%= username %>
             </span>
         </p>
+
+
+        <form action="/editDisplayName" method="post">
+            <label>Display Name: </label>
+            <input name="displayName" placeholder="Display Name" value="<%= displayName %>" class="px-2 py-1 rounded border text-slate-400" >
+            <button type="submit"
+                class="bg-slate-700 px-4 py-2 rounded-xl text-white hover:bg-slate-500 transition hover:scale-[1.01] ease-in-out" >
+                Save changes
+            </button>
+        </form>
+
         <p>Role: <span class="text-slate-400">
                 <%= role %>
             </span>
         <p>Region:
-        <p class="text-slate-400" id="location">Your region will appear here.</p>
+        <span class="text-slate-400" id="location">Your region will appear here.</span>
         </p>
         </p>
 
