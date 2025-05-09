@@ -16,10 +16,11 @@ const userSchema = new mongoose.Schema({
   region: String,
   role: {
     type: String,
-    enum: ['admin', 'user'],
-    default: 'user',
+    enum: ["admin", "user"],
+    default: "user",
   },
-  activeLobbiesIn: String,
+  activeLobbiesIn: [String], 
+
   userReigion: String,
 });
 const userModel = new mongoose.model('users', userSchema);
@@ -231,7 +232,6 @@ async function main() {
     password: String,
     owner: {
       type: String,
-      unique: true
     }
   });
 
@@ -272,6 +272,7 @@ async function main() {
     app.get("/api/allLobbies", async (req, res) => {
       try {
         const lobbies = await Lobby.find({});
+        
         res.json(lobbies);
       } catch (err) {
         console.error("Error fetching all lobbies:", err.message);
@@ -309,8 +310,9 @@ async function handleCreateLobby(req, res, gameID) {
   
     await userModel.updateOne(
       { username },
-      { $set: { activeLobbiesIn: lobbyId } }
+      { $addToSet: { activeLobbiesIn: lobbyId } } // ensures no duplicates
     );
+    
 
 
 
@@ -326,6 +328,26 @@ async function handleCreateLobby(req, res, gameID) {
 
 
 }
+
+app.post("/leaveLobby/:id", async (req, res) => {
+  try {
+    const username = req.session?.user?.username;
+    const lobbyId = req.params.id;
+
+    if (!username) return res.status(401).send("Not authenticated");
+    await Lobby.updateOne({ lobbyId }, { $pull: { user: username } });
+    await userModel.updateOne(
+      { username },
+      { $pull: { activeLobbiesIn: lobbyId } }
+    );
+
+    res.send("Left lobby successfully");
+  } catch (err) {
+    console.error("Error leaving lobby:", err);
+    res.status(500).send("Server error");
+  }
+});
+
 
 
   app.get("/lobbies", async (req, res) => {
@@ -365,9 +387,9 @@ async function handleCreateLobby(req, res, gameID) {
       // Add lobby to user's activeLobbiesIn
       await userModel.updateOne(
         { username },
-        { $set: { activeLobbiesIn: lobbyId } }
+        { $addToSet: { activeLobbiesIn: lobbyId } }
       );
-
+      
       res.send("Joined successfully");
     } catch (err) {
       console.error("Join error:", err);
@@ -424,15 +446,35 @@ async function handleCreateLobby(req, res, gameID) {
       const user = await userModel.findOne({ username });
       if (!user) return res.status(404).send("User not found");
 
-      const activeLobbyIds = user.activeLobbiesIn;
+      const activeLobbyIds = user.activeLobbiesIn || [];
+
+      console.log("User's activeLobbiesIn:", activeLobbyIds); // 🔍 Log what's stored
 
       const lobbies = await Lobby.find({ lobbyId: { $in: activeLobbyIds } });
+
+      const validLobbyIds = lobbies.map((lobby) => lobby.lobbyId);
+
+      // 🧹 Optional: clean up any stale references
+      if (validLobbyIds.length !== activeLobbyIds.length) {
+        await userModel.updateOne(
+          { username },
+          { $set: { activeLobbiesIn: validLobbyIds } }
+        );
+        console.log("Cleaned up invalid lobby references.");
+      }
+
+      console.log(
+        "Valid lobbies returned:",
+        lobbies.map((l) => l.lobbyId)
+      ); // 🔍 Log matches
+
       res.json(lobbies);
     } catch (err) {
       console.error("Error fetching active lobbies:", err.message);
       res.status(500).send("Server error");
     }
   });
+  
 
 }
 
