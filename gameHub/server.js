@@ -367,18 +367,37 @@ app.post("/leaveLobby/:id", async (req, res) => {
     const lobbyId = req.params.id;
 
     if (!username) return res.status(401).send("Not authenticated");
-    await Lobby.updateOne({ lobbyId }, { $pull: { user: username } });
-    await userModel.updateOne(
-      { username },
-      { $pull: { activeLobbiesIn: lobbyId } }
-    );
 
-    res.send("Left lobby successfully");
+    const lobby = await Lobby.findOne({ lobbyId });
+    if (!lobby) return res.status(404).send("Lobby not found");
+
+    if (lobby.owner === username) {
+      // Owner is leaving → disband the lobby
+      await Lobby.deleteOne({ lobbyId });
+
+      // Remove this lobby from all users' activeLobbiesIn
+      await userModel.updateMany(
+        { activeLobbiesIn: lobbyId },
+        { $pull: { activeLobbiesIn: lobbyId } }
+      );
+
+      res.send("Lobby disbanded successfully");
+    } else {
+      // Regular user is leaving → just update lobby and user
+      await Lobby.updateOne({ lobbyId }, { $pull: { user: username } });
+      await userModel.updateOne(
+        { username },
+        { $pull: { activeLobbiesIn: lobbyId } }
+      );
+
+      res.send("Left lobby successfully");
+    }
   } catch (err) {
-    console.error("Error leaving lobby:", err);
+    console.error("Error in leave/disband lobby:", err);
     res.status(500).send("Server error");
   }
 });
+
 
 
 
