@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script src="/scripts/createLobby.js"></script>
 </head>
 
 <body>
     <p1> Create your lobby </p1>
-    <form action="<%= gameId ? '/createLobby/' + gameId : '/createLobby' %>" method="POST">
+    <form action="<%= (typeof gameId !== 'undefined' && gameId) ? '/createLobby/' + gameId : '/createLobby' %>" method="POST">
+
         <label for="gameName">Game Name:</label><br>
         <input type="text" id="gameName" name="gameName" required><br><br>
 
