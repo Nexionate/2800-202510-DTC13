@@ -5,6 +5,8 @@ const bcrypt = require('bcrypt');
 const app = express();
 
 const path = require('path');
+const { type } = require('os');
+
 
 // api key: f61c15c68f3246a3aeebcfa53cdef84f
 
@@ -21,7 +23,11 @@ const userSchema = new mongoose.Schema({
   },
   activeLobbiesIn: [String], 
 
-  userReigion: String,
+  userRegion: {
+    type: String,
+    default: null,
+  },
+  displayName: String,
 });
 const userModel = new mongoose.model('users', userSchema);
 
@@ -30,6 +36,7 @@ main().catch((err) => console.log(err));
 async function main() {
   await mongoose.connect('mongodb://127.0.0.1:27017/GameHub');
   app.use(express.static(path.join(__dirname, 'public')));
+  app.use(express.json());
 
   const isAdmin = (req, res, next) => {
     if (req.session && req.session.user && req.session.user.role === 'admin') {
@@ -91,12 +98,23 @@ async function main() {
     const { username, password } = req.body;
 
     const user = await userModel.findOne({ username: username });
+
+    if (user.displayName == null) {
+      await userModel.updateOne(
+        { username },
+        { $set: { displayName: username } }
+      );
+
+    }
     if (!user) {
+
       return res.status(400).json({ message: 'User not found!' });
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
+
     if (passwordMatch) {
+
       req.session.user = user;
       res.redirect('/home');
     } else {
@@ -123,6 +141,7 @@ async function main() {
       password: hashedPassword,
     });
     await newUser.save();
+    console.log(newUser.role);
     res.render('home.ejs', { username: username });
   });
 
@@ -150,11 +169,12 @@ async function main() {
 
       res.render('home', {
         games: topGames,
-        role: user.role,
+        role: req.session.user.role,
         username: user.username,
       });
     } catch (error) {
       console.error('Fetch error:', error);
+      console.log("help");
       res.status(500).send('Error fetching games');
     }
   });
@@ -171,11 +191,23 @@ async function main() {
       role: req.session.user.role,
     });
   });
-  app.get('/profile', (req, res) => {
-    res.render('profile.ejs', {
-      username: req.session.user.username,
-      role: req.session.user.role,
-    });
+  app.get('/profile', async (req, res) => {
+    try {
+      const username = req.session?.user?.username;
+      const user = await userModel.findOne({ username });
+
+      if (!user) return res.status(404).send("User not found");
+      // this is done because if you edit and save the display name, it will be outdated since its pulling from
+      res.render('profile.ejs', {
+        username: req.session.user.username,
+        role: req.session.user.role,
+        displayName: user.displayName,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Failed to load profile");
+    }
+    
   });
   app.get('/searchGames', (req, res) => {
     res.render('searchGames.ejs', {
@@ -397,19 +429,49 @@ app.post("/leaveLobby/:id", async (req, res) => {
     }
   });
 
+  app.post("/editDisplayName", async (req, res) => {
+    try {
+      const newName = req.body.displayName;
+      console.log("new display name:", newName);
+
+      const username = req.session?.user?.username;
+      try{
+        //update to make more resilient later
+        if (newName != null){
+          await userModel.updateOne(
+            { username },
+            { $set: { displayName: newName } }
+          );
+        }
+         
+        
+      } catch (err) {
+        console.error(err);
+      }
+      res.redirect("/profile");
+    }
+    catch (error) {
+      console.error('Fetch error:', error);
+
+    }
+})
+
   app.post("/profile", async (req, res) => {
     try {
       const { location } = req.body;
-      console.log(location);
+      console.log("Location received:", location);
 
-      const username = req.session.user.username
+      const username = req.session?.user?.username;
+      console.log("Username from session:", username);
 
       await userModel.updateOne(
         { username },
-        { $addToSet: { userReigion: location } }
+        { $set: { userRegion: location } }
       );
 
+      res.status(200).send("Profile updated");
     } catch (err) {
+      console.log(err);
       res.status(500).send("DB error");
     }
 
