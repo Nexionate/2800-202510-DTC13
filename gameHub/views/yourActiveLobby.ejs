@@ -24,29 +24,63 @@
     </ul>
   </div>
 
-<script>
-  fetch('/api/activeLobbies')
-    .then(res => res.json())
-    .then(lobbies => {
-      const list = document.getElementById('lobby-list');
-      if (!lobbies.length) {
-        list.innerHTML = '<p class="text-center text-gray-500">No active lobbies found.</p>';
-      } else {
-        lobbies.forEach(lobby => {
-          const li = document.createElement('li');
-          li.className = "bg-white shadow rounded-lg p-4";
-          li.innerHTML = `
-            <h2 class="text-xl font-semibold">${lobby.lobbyName}</h2>
-            <p><strong>Game:</strong> ${lobby.gameName}</p>
-            <p><strong>Players:</strong> ${lobby.user.length} / ${lobby.numPlayers}</p>
-            <p><strong>Tags:</strong> ${lobby.tags ? lobby.tags.join(', ') : 'None'}</p>
-          `;
-          list.appendChild(li);
+  <script>
+    fetch('/api/activeLobbies')
+      .then(res => res.json())
+      .then(lobbies => {
+        const list = document.getElementById('lobby-list');
+        if (!lobbies.length) {
+          list.innerHTML = '<p class="text-center text-gray-500">No active lobbies found.</p>';
+        } else {
+          lobbies.forEach(lobby => {
+            const li = document.createElement('li');
+            li.className = "bg-white shadow rounded-lg p-4";
+
+            const playerListHTML = lobby.user.map(player => `<li class="ml-4">👤 ${player}</li>`).join('');
+
+            li.innerHTML = `
+              <h2 class="text-xl font-semibold">${lobby.lobbyName}</h2>
+              <p><strong>Game:</strong> ${lobby.gameName}</p>
+              <p><strong>Players:</strong> ${lobby.user.length} / ${lobby.numPlayers}</p>
+              <p><strong>Tags:</strong> ${lobby.tags ? lobby.tags.join(', ') : 'None'}</p>
+              <div class="mt-2">
+                <p class="font-semibold">Players in this lobby:</p>
+                <ul class="list-disc list-inside">
+                  ${playerListHTML}
+                </ul>
+              </div>
+              <button 
+                onclick="leaveLobby('${lobby.lobbyId}')" 
+                class="mt-4 bg-red-500 hover:bg-red-400 text-white px-3 py-1 rounded"
+              >
+                Leave Lobby
+              </button>
+            `;
+            list.appendChild(li);
+          });
+        }
+      })
+      .catch(err => {
+        console.error('Error loading active lobbies:', err);
+        document.getElementById('lobby-list').innerHTML = '<p class="text-center text-red-500">Failed to load lobbies.</p>';
+      });
+
+    function leaveLobby(lobbyId) {
+      fetch(`/leaveLobby/${lobbyId}`, {
+        method: "POST"
+      })
+        .then(res => {
+          if (!res.ok) throw new Error("Failed to leave");
+          return res.text();
+        })
+        .then(() => {
+          window.location.reload();
+        })
+        .catch(err => {
+          console.error("Error leaving lobby:", err);
+          alert("Failed to leave the lobby.");
         });
-      }
-    })
-    .catch(err => {
-      console.error('Error loading active lobbies:', err);
-      document.getElementById('lobby-list').innerHTML = '<p class="text-center text-red-500">Failed to load lobbies.</p>';
-    });
-</script>
+    }
+  </script>
+</body>
+</html>
