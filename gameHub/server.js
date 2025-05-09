@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
     enum: ['admin', 'user'],
     default: 'user',
   },
-  activeLobbiesIn: [String],
+  activeLobbiesIn: String,
   userReigion: String,
 });
 const userModel = new mongoose.model('users', userSchema);
@@ -226,6 +226,7 @@ async function main() {
     user: {
       type: [String],
       default: [],
+      unique: true
     },
     password: String,
     owner: {
@@ -257,7 +258,7 @@ async function main() {
 
   app.get('/createLobby', (req, res) => {
     const error = req.query.error;
-    res.render("createLobby", { gameId: undefined, error });
+    res.render("createLobby", { gameId: 0, error });
   });
 
   app.post("/createLobby/:gameId", async (req, res) => {
@@ -308,16 +309,17 @@ async function handleCreateLobby(req, res, gameID) {
   
     await userModel.updateOne(
       { username },
-      { $addToSet: { activeLobbiesIn: lobbyId } }
+      { $set: { activeLobbiesIn: lobbyId } }
     );
 
 
-    return res.redirect(`/yourActiveLobby/${lobbyId}`);
+
+    return res.redirect(`/yourActiveLobby`);
   } catch (error) {
     console.error("Error creating lobby:", error);
     return res.redirect(
       `/createLobby${gameID ? "/" + gameID : ""}?error=${encodeURIComponent(
-        "Lobby creation failed"
+        "You already in a lobby"
       )}`
     );
   }
@@ -329,12 +331,9 @@ async function handleCreateLobby(req, res, gameID) {
   app.get("/lobbies", async (req, res) => {
     try {
       const username = req.session?.user?.username;
-      console.log("Logged-in user:", username); // <-- Debug check
-
       if (!username) return res.status(401).send("User not authenticated");
 
       const lobbies = await Lobby.find({ user: { $ne: username } });
-      console.log("Lobbies found:", lobbies.length); // <-- Debug check
 
       res.json(lobbies)
     } catch (err) {
@@ -366,7 +365,7 @@ async function handleCreateLobby(req, res, gameID) {
       // Add lobby to user's activeLobbiesIn
       await userModel.updateOne(
         { username },
-        { $addToSet: { activeLobbiesIn: lobbyId } }
+        { $set: { activeLobbiesIn: lobbyId } }
       );
 
       res.send("Joined successfully");
