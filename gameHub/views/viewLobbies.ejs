@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   <title>All Lobbies</title>
+  <script src="/scripts/viewLobby.js"></script>
 </head>
 <body class="bg-gray-100 font-sans text-gray-800">
   <div class="p-6">
@@ -23,33 +24,6 @@
       <!-- Lobbies will be listed here -->
     </ul>
   </div>
-
-  <script>
-    fetch('/api/allLobbies')
-      .then(res => res.json())
-      .then(lobbies => {
-        const list = document.getElementById('lobby-list');
-        if (!lobbies.length) {
-          list.innerHTML = '<p class="text-center text-gray-500">No lobbies found.</p>';
-        } else {
-          lobbies.forEach(lobby => {
-            const li = document.createElement('li');
-            li.className = "bg-white shadow rounded-lg p-4";
-            li.innerHTML = `
-              <h2 class="text-xl font-semibold">${lobby.lobbyName}</h2>
-              <p><strong>Game:</strong> ${lobby.gameName}</p>
-              <p><strong>Players:</strong> ${lobby.user.length} / ${lobby.numPlayers}</p>
-              <p><strong>Tags:</strong> ${lobby.tags ? lobby.tags.join(', ') : 'None'}</p>
-              <p><strong>Owner:</strong> ${lobby.owner}</p>
-            `;
-            list.appendChild(li);
-          });
-        }
-      })
-      .catch(err => {
-        console.error('Error loading all lobbies:', err);
-        document.getElementById('lobby-list').innerHTML = '<p class="text-center text-red-500">Failed to load lobbies.</p>';
-      });
   </script>
 </body>
 </html>
