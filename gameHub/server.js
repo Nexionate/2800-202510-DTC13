@@ -7,7 +7,6 @@ const app = express();
 const path = require('path');
 const { type } = require('os');
 
-
 // api key: f61c15c68f3246a3aeebcfa53cdef84f
 
 const apiKey = 'f61c15c68f3246a3aeebcfa53cdef84f';
@@ -18,10 +17,10 @@ const userSchema = new mongoose.Schema({
   region: String,
   role: {
     type: String,
-    enum: ["admin", "user"],
-    default: "user",
+    enum: ['admin', 'user'],
+    default: 'user',
   },
-  activeLobbiesIn: [String], 
+  activeLobbiesIn: [String],
 
   userRegion: {
     type: String,
@@ -104,17 +103,14 @@ async function main() {
         { username },
         { $set: { displayName: username } }
       );
-
     }
     if (!user) {
-
       return res.status(400).json({ message: 'User not found!' });
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (passwordMatch) {
-
       req.session.user = user;
       res.redirect('/home');
     } else {
@@ -174,7 +170,7 @@ async function main() {
       });
     } catch (error) {
       console.error('Fetch error:', error);
-      console.log("help");
+      console.log('help');
       res.status(500).send('Error fetching games');
     }
   });
@@ -196,7 +192,7 @@ async function main() {
       const username = req.session?.user?.username;
       const user = await userModel.findOne({ username });
 
-      if (!user) return res.status(404).send("User not found");
+      if (!user) return res.status(404).send('User not found');
       // this is done because if you edit and save the display name, it will be outdated since its pulling from
       res.render('profile.ejs', {
         username: req.session.user.username,
@@ -205,9 +201,8 @@ async function main() {
       });
     } catch (err) {
       console.error(err);
-      res.status(500).send("Failed to load profile");
+      res.status(500).send('Failed to load profile');
     }
-    
   });
   app.get('/searchGames', (req, res) => {
     res.render('searchGames.ejs', {
@@ -237,38 +232,39 @@ async function main() {
     lobbyId: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
     },
     lobbyName: String,
     gameName: {
       type: String,
-      required: true
+      required: true,
     },
     numPlayers: {
       type: Number,
       required: true,
       min: 2,
-      max: 10
+      max: 10,
     },
     createdAt: {
       type: Date,
-      default: Date.now
+      default: Date.now,
     },
     tags: [String],
     gameID: String,
     user: {
       type: [String],
       default: [],
-      unique: true
+      unique: true,
     },
     password: String,
     owner: {
       type: String,
-    }
+    },
   });
 
   function generateLobbyId(length = 5) {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const chars =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
     for (let i = 0; i < length; i++) {
       result += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -276,160 +272,149 @@ async function main() {
     return result;
   }
 
-
-
   app.use(express.urlencoded({ extended: true }));
 
-  const Lobby = mongoose.model("Lobby", lobbySchema);
+  const Lobby = mongoose.model('Lobby', lobbySchema);
 
   app.get('/createLobby/:gameId', (req, res) => {
     const gameId = req.params.gameId;
     const error = req.query.error;
-    res.render("createLobby", { gameId, error });
+    res.render('createLobby', { gameId, error });
   });
 
   app.get('/createLobby', (req, res) => {
     const error = req.query.error;
-    res.render("createLobby", { gameId: 0, error });
+    res.render('createLobby', { gameId: 0, error });
   });
 
-  app.post("/createLobby/:gameId", async (req, res) => {
+  app.post('/createLobby/:gameId', async (req, res) => {
     await handleCreateLobby(req, res, req.params.gameId);
   });
 
-  app.post("/createLobby", async (req, res) => {
+  app.post('/createLobby', async (req, res) => {
     await handleCreateLobby(req, res, undefined);
   });
 
-    app.get("/api/allLobbies", async (req, res) => {
-      try {
-        const lobbies = await Lobby.find({});
-        
-        res.json(lobbies);
-      } catch (err) {
-        console.error("Error fetching all lobbies:", err.message);
-        res.status(500).send("Internal server error");
-      }
-    });
-  
-async function handleCreateLobby(req, res, gameID) {
-  try {
-    const { gameName, lobbyName, numPlayers, password, tags } = req.body;
-    const user = req.session.user;
-
-    if (!user) return res.status(401).send("User not authenticated");
-
-    const username = user.username;
-    const tagList = (Array.isArray(tags) ? tags : [tags]).filter(Boolean); // Removes null
-    const lobbyId = generateLobbyId();
-    const userList = [username];
-    const owner = username;
-
-    const newLobby = new Lobby({
-      lobbyId,
-      lobbyName,
-      gameName,
-      numPlayers,
-      tags: tagList,
-      gameID,
-      user: userList,
-      password,
-      owner,
-    });
-
-    await newLobby.save();
-
-  
-    await userModel.updateOne(
-      { username },
-      { $addToSet: { activeLobbiesIn: lobbyId } } // ensures no duplicates
-    );
-    
-
-
-
-    return res.redirect(`/yourActiveLobby`);
-  } catch (error) {
-    console.error("Error creating lobby:", error);
-    return res.redirect(
-      `/createLobby${gameID ? "/" + gameID : ""}?error=${encodeURIComponent(
-        "You already in a lobby"
-      )}`
-    );
-  }
-
-
-}
-
-app.post("/leaveLobby/:id", async (req, res) => {
-  try {
-    const username = req.session?.user?.username;
-    const lobbyId = req.params.id;
-
-    if (!username) return res.status(401).send("Not authenticated");
-
-    const lobby = await Lobby.findOne({ lobbyId });
-    if (!lobby) return res.status(404).send("Lobby not found");
-
-    if (lobby.owner === username) {
-      // Owner is leaving → disband the lobby
-      await Lobby.deleteOne({ lobbyId });
-
-      // Remove this lobby from all users' activeLobbiesIn
-      await userModel.updateMany(
-        { activeLobbiesIn: lobbyId },
-        { $pull: { activeLobbiesIn: lobbyId } }
-      );
-
-      res.send("Lobby disbanded successfully");
-    } else {
-      // Regular user is leaving → just update lobby and user
-      await Lobby.updateOne({ lobbyId }, { $pull: { user: username } });
-      await userModel.updateOne(
-        { username },
-        { $pull: { activeLobbiesIn: lobbyId } }
-      );
-
-      res.send("Left lobby successfully");
-    }
-  } catch (err) {
-    console.error("Error in leave/disband lobby:", err);
-    res.status(500).send("Server error");
-  }
-});
-
-
-
-
-  app.get("/lobbies", async (req, res) => {
+  app.get('/api/allLobbies', async (req, res) => {
     try {
-      const username = req.session?.user?.username;
-      if (!username) return res.status(401).send("User not authenticated");
+      const lobbies = await Lobby.find({});
 
-      const lobbies = await Lobby.find({ user: { $ne: username } });
-
-      res.json(lobbies)
+      res.json(lobbies);
     } catch (err) {
-      console.error("Error fetching lobbies:", err.message);
-      res.status(500).send("Internal server error");
+      console.error('Error fetching all lobbies:', err.message);
+      res.status(500).send('Internal server error');
     }
   });
 
-  app.post("/joinLobby/:id", async (req, res) => {
+  async function handleCreateLobby(req, res, gameID) {
+    try {
+      const { gameName, lobbyName, numPlayers, password, tags } = req.body;
+      const user = req.session.user;
+
+      if (!user) return res.status(401).send('User not authenticated');
+
+      const username = user.username;
+      const tagList = (Array.isArray(tags) ? tags : [tags]).filter(Boolean); // Removes null
+      const lobbyId = generateLobbyId();
+      const userList = [username];
+      const owner = username;
+
+      const newLobby = new Lobby({
+        lobbyId,
+        lobbyName,
+        gameName,
+        numPlayers,
+        tags: tagList,
+        gameID,
+        user: userList,
+        password,
+        owner,
+      });
+
+      await newLobby.save();
+
+      await userModel.updateOne(
+        { username },
+        { $addToSet: { activeLobbiesIn: lobbyId } } // ensures no duplicates
+      );
+
+      return res.redirect(`/yourActiveLobby`);
+    } catch (error) {
+      console.error('Error creating lobby:', error);
+      return res.redirect(
+        `/createLobby${gameID ? '/' + gameID : ''}?error=${encodeURIComponent(
+          'You already in a lobby'
+        )}`
+      );
+    }
+  }
+
+  app.post('/leaveLobby/:id', async (req, res) => {
     try {
       const username = req.session?.user?.username;
       const lobbyId = req.params.id;
 
-      if (!username) return res.status(401).send("Not authenticated");
+      if (!username) return res.status(401).send('Not authenticated');
 
       const lobby = await Lobby.findOne({ lobbyId });
-      if (!lobby) return res.status(404).send("Lobby not found");
+      if (!lobby) return res.status(404).send('Lobby not found');
+
+      if (lobby.owner === username) {
+        // Owner is leaving → disband the lobby
+        await Lobby.deleteOne({ lobbyId });
+
+        // Remove this lobby from all users' activeLobbiesIn
+        await userModel.updateMany(
+          { activeLobbiesIn: lobbyId },
+          { $pull: { activeLobbiesIn: lobbyId } }
+        );
+
+        res.send('Lobby disbanded successfully');
+      } else {
+        // Regular user is leaving → just update lobby and user
+        await Lobby.updateOne({ lobbyId }, { $pull: { user: username } });
+        await userModel.updateOne(
+          { username },
+          { $pull: { activeLobbiesIn: lobbyId } }
+        );
+
+        res.send('Left lobby successfully');
+      }
+    } catch (err) {
+      console.error('Error in leave/disband lobby:', err);
+      res.status(500).send('Server error');
+    }
+  });
+
+  app.get('/lobbies', async (req, res) => {
+    try {
+      const username = req.session?.user?.username;
+      if (!username) return res.status(401).send('User not authenticated');
+
+      const lobbies = await Lobby.find({ user: { $ne: username } });
+
+      res.json(lobbies);
+    } catch (err) {
+      console.error('Error fetching lobbies:', err.message);
+      res.status(500).send('Internal server error');
+    }
+  });
+
+  app.post('/joinLobby/:id', async (req, res) => {
+    try {
+      const username = req.session?.user?.username;
+      const lobbyId = req.params.id;
+
+      if (!username) return res.status(401).send('Not authenticated');
+
+      const lobby = await Lobby.findOne({ lobbyId });
+      if (!lobby) return res.status(404).send('Lobby not found');
 
       if (lobby.user.includes(username))
-        return res.status(400).send("Already in lobby");
+        return res.status(400).send('Already in lobby');
 
       if (lobby.user.length >= lobby.numPlayers)
-        return res.status(400).send("Lobby is full");
+        return res.status(400).send('Lobby is full');
 
       // Add user to lobby
       lobby.user.push(username);
@@ -440,62 +425,56 @@ app.post("/leaveLobby/:id", async (req, res) => {
         { username },
         { $addToSet: { activeLobbiesIn: lobbyId } }
       );
-      
-      res.send("Joined successfully");
+
+      res.send('Joined successfully');
     } catch (err) {
-      console.error("Join error:", err);
-      res.status(500).send("Server error");
+      console.error('Join error:', err);
+      res.status(500).send('Server error');
     }
   });
 
-  app.post("/editDisplayName", async (req, res) => {
+  app.post('/editDisplayName', async (req, res) => {
     try {
       const newName = req.body.displayName;
-      console.log("new display name:", newName);
+      console.log('new display name:', newName);
 
       const username = req.session?.user?.username;
-      try{
+      try {
         //update to make more resilient later
-        if (newName != null){
+        if (newName != null) {
           await userModel.updateOne(
             { username },
             { $set: { displayName: newName } }
           );
         }
-         
-        
       } catch (err) {
         console.error(err);
       }
-      res.redirect("/profile");
-    }
-    catch (error) {
+      res.redirect('/profile');
+    } catch (error) {
       console.error('Fetch error:', error);
-
     }
-})
+  });
 
-  app.post("/profile", async (req, res) => {
+  app.post('/profile', async (req, res) => {
     try {
       const { location } = req.body;
-      console.log("Location received:", location);
+      console.log('Location received:', location);
 
       const username = req.session?.user?.username;
-      console.log("Username from session:", username);
+      console.log('Username from session:', username);
 
       await userModel.updateOne(
         { username },
         { $set: { userRegion: location } }
       );
 
-      res.status(200).send("Profile updated");
+      res.status(200).send('Profile updated');
     } catch (err) {
       console.log(err);
-      res.status(500).send("DB error");
+      res.status(500).send('DB error');
     }
-
-
-  })
+  });
 
   function showPosition(position) {
     const lat = position.coords.latitude;
@@ -506,26 +485,26 @@ app.post("/leaveLobby/:id", async (req, res) => {
 
   function getRegion(lat, lon) {
     if (lat >= 15 && lat <= 72 && lon >= -170 && lon <= -50) {
-      return "North America";
+      return 'North America';
     } else if (lat >= -60 && lat <= 15 && lon >= -90 && lon <= -30) {
-      return "South America";
+      return 'South America';
     } else if (lat >= 35 && lat <= 70 && lon >= -10 && lon <= 60) {
-      return "Europe";
+      return 'Europe';
     } else if (lat >= 5 && lat <= 80 && lon >= 60 && lon <= 180) {
-      return "Asia";
+      return 'Asia';
     } else if (lat >= -50 && lat <= 0 && lon >= 110 && lon <= 180) {
-      return "Oceania";
+      return 'Oceania';
     } else {
-      return "Unknown Region";
+      return 'Unknown Region';
     }
   }
-  app.get("/api/activeLobbies", async (req, res) => {
+  app.get('/api/activeLobbies', async (req, res) => {
     try {
       const username = req.session?.user?.username;
-      if (!username) return res.status(401).send("Not authenticated");
+      if (!username) return res.status(401).send('Not authenticated');
 
       const user = await userModel.findOne({ username });
-      if (!user) return res.status(404).send("User not found");
+      if (!user) return res.status(404).send('User not found');
 
       const activeLobbyIds = user.activeLobbiesIn || [];
 
@@ -541,26 +520,20 @@ app.post("/leaveLobby/:id", async (req, res) => {
           { username },
           { $set: { activeLobbiesIn: validLobbyIds } }
         );
-        console.log("Cleaned up invalid lobby references.");
+        console.log('Cleaned up invalid lobby references.');
       }
 
       console.log(
-        "Valid lobbies returned:",
+        'Valid lobbies returned:',
         lobbies.map((l) => l.lobbyId)
       ); // 🔍 Log matches
 
       res.json(lobbies);
     } catch (err) {
-      console.error("Error fetching active lobbies:", err.message);
-      res.status(500).send("Server error");
+      console.error('Error fetching active lobbies:', err.message);
+      res.status(500).send('Server error');
     }
   });
-  
-
-}
-
-
-
 
   app.use(express.urlencoded());
   app.post('/search', async (req, res) => {
