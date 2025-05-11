@@ -562,30 +562,33 @@ app.post("/leaveLobby/:id", async (req, res) => {
 
 
 
-app.get('/search/:game', async (req, res) => {
-  try {
-    searchName = req.params.game;
-    const response = await fetch(
-      `https://api.rawg.io/api/games?key=${apiKey}&tags=co-op&search=${searchName}`
-    );
+  app.use(express.urlencoded());
+  app.post('/search', async (req, res) => {
+    try {
+      searchName = req.body.search;
+      const response = await fetch(
+        `https://api.rawg.io/api/games?key=${apiKey}&tags=co-op&search=${encodeURIComponent(
+          searchName
+        )}`
+      );
 
-    if (!response.ok) throw new Error('Failed to fetch from RAWG API');
+      if (!response.ok) throw new Error('Failed to fetch from RAWG API');
 
-    const data = await response.json();
-    const games = data.results;
+      const data = await response.json();
+      const games = data.results;
 
-    res.redirect('/allGames');
-    // Make sure session has user info
-    const user = req.session.user || {};
-    res.render('allGames', {
-      games,
-      filter: { name },
-    });
-  } catch (error) {
-    console.error('Fetch error:', error);
-    res.status(500).send('Error fetching games');
-  }
-});
-
-
-
+      // Make sure session has user info. This information is passed to allGames.ejs
+      const user = req.session.user || {};
+      res.render('allGames.ejs', {
+        username: req.session.user.username,
+        role: req.session.user.role,
+        games,
+        filters: { name: searchName },
+        searchName,
+      });
+    } catch (error) {
+      console.error('Fetch error:', error);
+      res.status(500).send('Error fetching games');
+    }
+  });
+}
