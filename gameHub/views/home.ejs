@@ -25,27 +25,13 @@
         },
       };
     </script>
-    <!-- <style>
-    @keyframes kenburns {
-        0% {
-          transform: scale(1) translate(0, 0);
-        }
     
-        100% {
-          transform: scale(1.1) translate(-5%, -5%);
-        }
-      }
-    
-      .kenburns-img {
-        animation: kenburns 20s ease-in-out infinite alternate;
-      }
-    </style> -->
 
     <title>Home Page</title>
   </head>
 
 
-  <body class="bg-gray-200 font-sans text-gray-800">
+  <body class="bg-black font-sans text-gray-800">
     <!-- <% if (role === "admin") { %>
     <h1>Admin Page</h1>
     <p>Welcome, Admin!</p>
@@ -82,7 +68,7 @@
 
     <div class="px-8 py-2 space-y-4">
       <h1
-        class="text-4xl flex flex-row gap-4 justify-center mx-auto flex-wrap font-bold"
+        class="text-4xl flex flex-row gap-4 text-white justify-center mx-auto flex-wrap font-bold"
       >
         GameHub
       </h1>
@@ -94,9 +80,12 @@
           class=" border-black w-full rounded-lg bg-white"
         />
       </form>
-      <div class="p-8 gap-4 justify-center mx-auto flex-wrap rounded-xl space-y-1 bg-gray-100 shadow:md">
+      <div
+        class="p-8 gap-4 justify-center mx-auto flex-wrap rounded-xl space-y-1 bg-gradient-to-br from-gray-700/70 via-gray-600/60 to-gray-500/50 shadow-md">
+
+
         <div class="px-8 py-4">
-          <h2 class="text-2xl font-bold mb-4">Top 10 Popular Games</h2>
+          <h2 class="text-2xl text-white font-bold mb-4">Top 10 Popular Games</h2>
       
           <% if (games && games.length> 0) { %>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
