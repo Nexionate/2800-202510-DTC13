@@ -538,12 +538,16 @@ async function main() {
   app.use(express.urlencoded());
   app.post('/search', async (req, res) => {
     try {
-      searchName = req.body.search;
-      const response = await fetch(
-        `https://api.rawg.io/api/games?key=${apiKey}&tags=co-op&search=${encodeURIComponent(
-          searchName
-        )}`
-      );
+      let searchName = req.body.search?.trim();
+      let apiUrl = `https://api.rawg.io/api/games?key=${apiKey}&tags=co-op`;
+
+      // if seach exists
+      if (searchName) {
+        apiUrl += `&search=${encodeURIComponent(searchName)}`;
+      } else {
+        searchName = 'All Games';
+      }
+      const response = await fetch(apiUrl);
 
       if (!response.ok) throw new Error('Failed to fetch from RAWG API');
 
