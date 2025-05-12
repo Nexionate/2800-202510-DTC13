@@ -31,7 +31,7 @@
   </head>
 
 
-  <body class="bg-black font-sans text-gray-800">
+  <body class="bg-gray-100 font-sans text-gray-800">
     <!-- <% if (role === "admin") { %>
     <h1>Admin Page</h1>
     <p>Welcome, Admin!</p>
@@ -82,15 +82,15 @@
       </form>
       <div
         class="p-8 gap-4 justify-center mx-auto flex-wrap rounded-xl space-y-1 bg-gradient-to-br from-gray-700/70 via-gray-600/60 to-gray-500/50 shadow-md">
-
-
         <div class="px-8 py-4">
           <h2 class="text-2xl text-white font-bold mb-4">Top 10 Popular Games</h2>
       
           <% if (games && games.length> 0) { %>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
               <% games.forEach(game=> { %>
-                <div class=" p-4 rounded-xl text-center shadow:md bg-white transition hover:scale-[1.01] ease-in-out">
+                <div
+                  class="tilt-card p-4 rounded-xl text-center shadow-md bg-white transition-transform duration-300 ease-in-out hover:scale-[1.01]"
+                  data-tilt-id="<%= game.id %>">
                   <h3 class="text-lg font-semibold mb-2">
                     <%= game.name %>
                   </h3>
@@ -117,6 +117,30 @@
                 </button>
         </div>
       </div>
+      
+      <!-- Tilt effect script -->
+      <script>
+        document.querySelectorAll('.tilt-card').forEach(card => {
+          card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            const rotateX = -(y - centerY) / 20;
+            const rotateY = (x - centerX) / 20;
+
+            card.style.transform = `perspective(600px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.01)`;
+          });
+
+          card.addEventListener('mouseleave', () => {
+            card.style.transform = '';
+          });
+        });
+      </script>
+
 
       <div class="flex-col space-y-8 flex justify-center mx-auto px-8">
         <!-- <div class="py-4">
