@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 
-<body>
+<body class="bg-gray-100 font-sans text-gray-800">
     <div class="flex flex-row justify-center pt-5 text-md text-slate-500 space-x-5 pb-3">
         <button class="px-3" onclick="window.location.href='/home'">Home</button>
         <button class="px-3" onclick="window.location.href='/profile'">Profile</button>
@@ -17,40 +17,63 @@
         </form>
 
     </div>
-    <div class="space-y-4 px-5 py-2">
-        <p1 class="text-2xl font-bold ">Your Profile</p1>
-        <p>Username: <span class="text-slate-400">
-                <%= username %>
-            </span>
-        </p>
+    <div class="flex flex-row mx-auto  justify-center max-w-3xl pt-5">
+        <div class="space-y-4 px-5 py-3 bg-white shadow rounded-lg">
+            <div class=" flex flex-row justify-center">
+                <h1 class="text-2xl font-bold text-center ">Your Profile</h1>
+            </div>
+            <div>
+
+                <p>Username: <span class="text-slate-400">
+                        <%= username %>
+                    </span>
+                </p>
+            </div>
 
 
-        <form action="/editDisplayName" method="post">
-            <label>Display Name: </label>
-            <input name="displayName" placeholder="Display Name" value="<%= displayName %>" class="px-2 py-1 rounded border text-slate-400" >
-            <button type="submit"
-                class="bg-slate-700 px-4 py-2 rounded-xl text-white hover:bg-slate-500 transition hover:scale-[1.01] ease-in-out" >
-                Save changes
-            </button>
-        </form>
-
-        <p>Role: <span class="text-slate-400">
-                <%= role %>
-            </span>
-        <p>Region:
-        <span class="text-slate-400" id="location">Your region will appear here.</span>
-        </p>
-        </p>
 
 
-        <form action="" method="post">
-            <button type="button"
-                class="bg-slate-700 px-4 py-2 rounded-xl text-white hover:bg-slate-500 transition hover:scale-[1.01] ease-in-out"
-                onclick="getLocation()">
-                Find location
-            </button>
-        </form>
+            <p>Role: <span class="text-slate-400">
+                    <%= role %>
+                </span>
+            <div class="flex flex-row justify-between">
+                <form action="/editDisplayName" method="post">
+                    <label>Display Name: </label>
+                    <input name="displayName" placeholder="Display Name" value="<%= displayName %>"
+                        class="px-3 py-1 rounded border text-slate-400">
+                    <button type="submit"
+                        class="bg-slate-700 px-4 py-2 rounded-lg text-white hover:bg-slate-500 transition hover:scale-[1.01] ease-in-out shadow-md">
+                        Save changes
+                    </button>
+                </form>
+            </div>
 
+            <div class="flex flex-box justify-between">
+                <p>Region:
+                    <span class="text-slate-400" id="location">Your region will appear here.</span>
+                </p>
+                </p>
+                <form action="" method="post">
+                    <button type="button"
+                        class="bg-slate-700 px-4 py-2 rounded-lg text-white hover:bg-slate-500 transition hover:scale-[1.01] ease-in-out shadow-md"
+                        onclick="getLocation()">
+                        Find location
+                    </button>
+                </form>
+            </div>
+            <div class="flex flex-row justify-center">
+                <button onclick="window.location.href='/home'"
+                    class=" bg-red-500 hover:bg-red-400 text-white px-6 py-2 rounded shadow-md transition hover:scale-[1.01] ease-in-out">
+                    Home
+                </button>
+            </div>
+
+
+
+
+
+
+        </div>
     </div>
 
 
