@@ -107,27 +107,7 @@
     <div id="kenburns-bg-wrapper" class="absolute inset-0 overflow-hidden z-0"></div>
     <div class="absolute inset-0 bg-black/80 z-10 pointer-events-none "></div>
 
-    <!-- <% if (role === "admin") { %>
-    <h1>Admin Page</h1>
-    <p>Welcome, Admin!</p>
-    <p>Here is a list of all users:</p>
-    <ul id="user-list"></ul>
-
-    <script>
-      fetch('/admin/users')
-        .then((response) => response.json())
-        .then((data) => {
-          const userList = document.getElementById('user-list');
-          data.forEach((user) => {
-            const li = document.createElement('li');
-            li.innerText = user.username;
-            userList.appendChild(li);
-          });
-        })
-        .catch((error) => console.error('Error fetching users:', error));
-    </script>
-    <% } else if (role === "user") { %>
-    <h2>Welcome, regular user!</h2> -->
+    
 
     <div class="relative z-20">
       <!-- Navigation bar -->
@@ -242,7 +222,6 @@
       <div class="relative z-20 flex-col space-y-8 flex justify-center mx-auto px-8">
         <!-- <div class="py-4">
           <p>Hi <%= username %>,<br />Welcome to the home page!</p>
-          <p>Role: <%= role %></p>
         </div> -->
 
       <button class="text-lg bg-slate-700 px-3 py-6 rounded-xl text-white hover:bg-slate-500 transition hover:scale-[1.01] ease-in-out" onclick="window.location.href='/createLobby/0'">
@@ -276,7 +255,7 @@
             }
           });
         })
-        .catch(err => console.error('Error fetching background games:', err));
+        
     </script>
 
   </div>
