@@ -31,21 +31,21 @@
           transform: scale(1) translate(0, 0);
           opacity: 0;
         }
-    
+
         10% {
           opacity: 1;
         }
-    
+
         90% {
           opacity: 1;
         }
-    
+
         100% {
           transform: scale(1.1) translate(-3%, -3%);
           opacity: 0;
         }
       }
-    
+
       .kenburns-image {
         position: absolute;
         top: 0;
@@ -60,19 +60,19 @@
         /* Increase brightness by 30% */
         z-index: -1;
       }
-    
+
       .kenburns-image:nth-child(1) {
         animation-delay: 0s;
       }
-    
+
       .kenburns-image:nth-child(2) {
         animation-delay: 3s;
       }
-    
+
       .kenburns-image:nth-child(3) {
         animation-delay: 6s;
       }
-    
+
       .kenburns-image:nth-child(4) {
         animation-delay: 9s;
       }
@@ -96,35 +96,37 @@
       }
     </style>
 
-
-
     <title>Home Page</title>
   </head>
 
-
   <body class="-z-10 bg-black font-sans text-gray-800">
-
-    <div id="kenburns-bg-wrapper" class="absolute inset-0 overflow-hidden z-0"></div>
-    <div class="absolute inset-0 bg-black/80 z-10 pointer-events-none "></div>
-
-    
+    <div
+      id="kenburns-bg-wrapper"
+      class="absolute inset-0 overflow-hidden z-0"
+    ></div>
+    <div class="absolute inset-0 bg-black/80 z-10 pointer-events-none"></div>
 
     <div class="relative z-20">
       <!-- Navigation bar -->
-      <div class="flex flex-row justify-center pt-2 pb-2 text-md text-white space-x-5 bg-[#000000] relative z-10">
-        <button class="px-3" onclick="window.location.href='/home'">Home</button>
-        <button class="px-3" onclick="window.location.href='/profile'">Profile</button>
+      <div
+        class="flex flex-row justify-center pt-2 pb-2 text-md text-white space-x-5 bg-[#000000] relative z-10"
+      >
+        <button class="px-3" onclick="window.location.href='/home'">
+          Home
+        </button>
+        <button class="px-3" onclick="window.location.href='/profile'">
+          Profile
+        </button>
         <form class="px-3" action="/logout">
           <input type="submit" value="Logout" />
         </form>
       </div>
-    
+
       <!-- Gradient fade at bottom -->
-      <div class="absolute bottom-0 left-0 w-full h-6 bg-gradient-to-t from-black to-transparent pointer-events-none z-0">
-      </div>
+      <div
+        class="absolute bottom-0 left-0 w-full h-6 bg-gradient-to-t from-black to-transparent pointer-events-none z-0"
+      ></div>
     </div>
-
-
 
     <div class="relative z-20 px-8 py-2 space-y-4">
       <h1
@@ -133,69 +135,87 @@
         GameHub
       </h1>
       <form action="/search" method="post" class="flex justify-center">
-        <input type="text" name="search" placeholder="Search..."
-          class="border border-black w-1/3 rounded-lg bg-white px-4 py-2" />
+        <input
+          type="text"
+          name="search"
+          placeholder="Search..."
+          class="border border-black w-1/3 rounded-lg bg-white px-4 py-2"
+        />
       </form>
 
       <input type="text" id="aiInput" placeholder="Enter a topic..." />
       <button onclick="askAIMagic()">🪄 Magic Wand</button>
       <div id="aiOutput"></div>
-      
+
       <script>
         async function askAIMagic() {
-          const topic = document.getElementById("aiInput").value;
-          const res = await fetch("/magic", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+          const topic = document.getElementById('aiInput').value;
+          const res = await fetch('/magic', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ topic }),
           });
 
           const data = await res.json();
-          document.getElementById("aiOutput").innerText = data.result || "No magic.";
+          document.getElementById('aiOutput').innerText =
+            data.result || 'No magic.';
         }
       </script>
 
       <div
-        class="relative z-20 p-2 gap-4 justify-center mx-auto flex-wrap rounded-xl space-y-1 bg-transparent shadow-md">
+        class="relative z-20 p-2 gap-4 justify-center mx-auto flex-wrap rounded-xl space-y-1 bg-transparent shadow-md"
+      >
         <div class="px-8 py-4">
-          <h2 class="text-2xl text-white font-bold mb-4">Top 10 Popular Games</h2>
-      
+          <h2 class="text-2xl text-white font-bold mb-4">
+            Top 10 Popular Games
+          </h2>
+
           <% if (games && games.length> 0) { %>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-              <% games.forEach(game=> { %>
-                <div
-                  class="tilt-card p-4 rounded-xl text-center shadow-md bg-white transform hover:scale-101 active:scale-98 ease-in-out "
-                  data-tilt-id="<%= game.id %>">
-                  <h3 class="text-lg font-semibold mb-2">
-                    <%= game.name %>
-                  </h3>
-                  <p class="text-sm mb-2 text-slate-500">Rating: <%= game.rating %>
-                  </p>
-                  <% if (game.background_image) { %>
-                    <a href="/gameDescription/<%= game.id %>">
-                      <img src="<%= game.background_image %>" alt="<%= game.name %>"
-                        class="w-full h-40 object-cover rounded" />
-                    </a>
-                    <% } %>
-                </div>
-                <% }) %>
-            </div>
-            <% } else { %>
-              <p>No games available.</p>
+          <div
+            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
+          >
+            <% games.forEach(game=> { %>
+            <div
+              class="tilt-card p-4 rounded-xl text-center shadow-md bg-white transform hover:scale-101 active:scale-98 ease-in-out"
+              data-tilt-id="<%= game.id %>"
+            >
+              <h3 class="text-lg font-semibold mb-2"><%= game.name %></h3>
+              <p class="text-sm mb-2 text-slate-500">
+                Rating: <%= game.rating %>
+              </p>
+              <% if (game.background_image) { %>
+              <a href="/gameDescription/<%= game.id %>">
+                <img
+                  src="<%= game.background_image %>"
+                  alt="<%= game.name %>"
+                  class="w-full h-40 object-cover rounded"
+                />
+              </a>
               <% } %>
-      
-                <p class="text-slate-400 text-sm pt-6">See what people are playing!</p>
-                <button
-                  class="mt-2 bg-slate-700 px-4 py-2 rounded-xl text-white hover:bg-slate-500 transition hover:scale-[1.01] ease-in-out"
-                  onclick="window.location.href='/allGames'">
-                  View All Games
-                </button>
+            </div>
+            <% }) %>
+          </div>
+          <% } else { %>
+          <p>No games available.</p>
+          <% } %>
+
+          <p class="text-slate-400 text-sm pt-6">
+            See what people are playing!
+          </p>
+          <form action="/search" method="post">
+            <button
+              class="bg-slate-700 px-4 py-2 rounded-xl text-white hover:bg-slate-500 transition hover:scale-[1.01] ease-in-out"
+              onclick="window.location.href='/allGames'"
+            >
+              View All Games
+            </button>
+          </form>
         </div>
       </div>
-      
+
       <!-- Tilt effect script -->
       <script>
-        document.querySelectorAll('.tilt-card').forEach(card => {
+        document.querySelectorAll('.tilt-card').forEach((card) => {
           card.addEventListener('mousemove', (e) => {
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left;
@@ -214,51 +234,55 @@
             card.style.transform = '';
           });
         });
-
-        
       </script>
 
-
-      <div class="relative z-20 flex-col space-y-8 flex justify-center mx-auto px-8">
+      <div
+        class="relative z-20 flex-col space-y-8 flex justify-center mx-auto px-8"
+      >
         <!-- <div class="py-4">
           <p>Hi <%= username %>,<br />Welcome to the home page!</p>
         </div> -->
 
-      <button class="text-lg bg-slate-700 px-3 py-6 rounded-xl text-white hover:bg-slate-500 transition hover:scale-[1.01] ease-in-out" onclick="window.location.href='/createLobby/0'">
-        Create a Lobby
-      </button>
+        <button
+          class="text-lg bg-slate-700 px-3 py-6 rounded-xl text-white hover:bg-slate-500 transition hover:scale-[1.01] ease-in-out"
+          onclick="window.location.href='/createLobby/0'"
+        >
+          Create a Lobby
+        </button>
 
-      <button class="text-lg bg-slate-700 px-3 py-6 rounded-xl text-white hover:bg-slate-500 transition hover:scale-[1.01] ease-in-out" onclick="window.location.href='/viewLobbies'">
-        Join a Lobby
-      </button>
+        <button
+          class="text-lg bg-slate-700 px-3 py-6 rounded-xl text-white hover:bg-slate-500 transition hover:scale-[1.01] ease-in-out"
+          onclick="window.location.href='/viewLobbies'"
+        >
+          Join a Lobby
+        </button>
 
-      <button class="text-lg bg-slate-500 px-3 py-6 rounded-xl text-white hover:bg-slate-400 transition hover:scale-[1.01] ease-in-out" onclick="window.location.href='/yourActiveLobby'">
-        Your Active Lobby
-      </button>
+        <button
+          class="text-lg bg-slate-500 px-3 py-6 rounded-xl text-white hover:bg-slate-400 transition hover:scale-[1.01] ease-in-out"
+          onclick="window.location.href='/yourActiveLobby'"
+        >
+          Your Active Lobby
+        </button>
+      </div>
+      <script>
+        const apiKey = 'f61c15c68f3246a3aeebcfa53cdef84f';
+        const wrapper = document.getElementById('kenburns-bg-wrapper');
 
-
-
-    </div>
-    <script>
-      const apiKey = 'f61c15c68f3246a3aeebcfa53cdef84f'; 
-      const wrapper = document.getElementById('kenburns-bg-wrapper');
-
-      fetch(`https://api.rawg.io/api/games?key=${apiKey}&tags=multiplayer,co-op&page_size=10`)
-        .then(res => res.json())
-        .then(data => {
-          data.results.forEach((game, index) => {
-            if (game.background_image) {
-              const bg = document.createElement('div');
-              bg.className = 'kenburns-image';
-              bg.style.backgroundImage = `url(${game.background_image})`;
-              wrapper.appendChild(bg);
-            }
+        fetch(
+          `https://api.rawg.io/api/games?key=${apiKey}&tags=multiplayer,co-op&page_size=10`
+        )
+          .then((res) => res.json())
+          .then((data) => {
+            data.results.forEach((game, index) => {
+              if (game.background_image) {
+                const bg = document.createElement('div');
+                bg.className = 'kenburns-image';
+                bg.style.backgroundImage = `url(${game.background_image})`;
+                wrapper.appendChild(bg);
+              }
+            });
           });
-        })
-        
-    </script>
-
-  </div>
-
-</body>
+      </script>
+    </div>
+  </body>
 </html>

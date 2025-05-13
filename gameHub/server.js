@@ -5,17 +5,11 @@ const bcrypt = require('bcrypt');
 const app = express();
 const path = require('path');
 const { type } = require('os');
-const fetch = require("node-fetch");
+const fetch = require('node-fetch');
 
 // api key: f61c15c68f3246a3aeebcfa53cdef84f
 
 const apiKey = 'f61c15c68f3246a3aeebcfa53cdef84f';
-
-
-
-
-
-
 
 const userSchema = new mongoose.Schema({
   username: String,
@@ -124,12 +118,12 @@ async function main() {
     res.redirect('/login');
   });
 
-  app.post("/register", async (req, res) => {
+  app.post('/register', async (req, res) => {
     const { username, password } = req.body;
 
     const userExists = await userModel.findOne({ username });
     if (userExists) {
-      return res.status(400).json({ message: "Username already taken!" });
+      return res.status(400).json({ message: 'Username already taken!' });
     }
 
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
@@ -150,16 +144,16 @@ async function main() {
       const topGames = data.results;
 
       // ✅ Render home with games and username
-      res.render("home.ejs", {
+      res.render('home.ejs', {
         username,
         games: topGames,
       });
     } catch (error) {
-      console.error("Error fetching games after register:", error);
-      res.status(500).send("Failed to fetch games");
+      console.error('Error fetching games after register:', error);
+      res.status(500).send('Failed to fetch games');
     }
   });
-  
+
   const isAuthenticated = (req, res, next) => {
     if (req.session && req.session.user) {
       return next();
@@ -170,7 +164,7 @@ async function main() {
 
   app.use(isAuthenticated);
 
-  app.get("/home", async (req, res) => {
+  app.get('/home', async (req, res) => {
     try {
       const response = await fetch(
         `https://api.rawg.io/api/games?key=${apiKey}&tags=co-op&ordering=-rating&page_size=10`
@@ -182,27 +176,26 @@ async function main() {
       // Make sure session has user info
       const user = req.session.user || {};
 
-      res.render("home", {
+      res.render('home', {
         games: topGames,
         username: user.username,
       });
     } catch (error) {
-      console.error("Fetch error:", error);
-      res.status(500).send("Error fetching games");
+      console.error('Fetch error:', error);
+      res.status(500).send('Error fetching games');
     }
   });
 
-
-  app.post("/magic", async (req, res) => {
+  app.post('/magic', async (req, res) => {
     const { topic } = req.body;
-    const API_KEY = "AIzaSyD6oYnwtMMdnDBWOpTBFjq45DD2hxdjU8k";
+    const API_KEY = 'AIzaSyD6oYnwtMMdnDBWOpTBFjq45DD2hxdjU8k';
 
     try {
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
         {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             contents: [
               {
@@ -218,22 +211,17 @@ async function main() {
       );
 
       const data = await response.json();
-      console.log("Gemini API response:", JSON.stringify(data, null, 2));
+      console.log('Gemini API response:', JSON.stringify(data, null, 2));
 
       const text =
-        data.candidates?.[0]?.content?.parts?.[0]?.text || "No magic returned.";
+        data.candidates?.[0]?.content?.parts?.[0]?.text || 'No magic returned.';
 
       res.json({ result: text });
     } catch (err) {
-      console.error("Gemini API error:", err);
-      res.status(500).json({ error: "Gemini API request failed." });
+      console.error('Gemini API error:', err);
+      res.status(500).json({ error: 'Gemini API request failed.' });
     }
   });
-  
-  
-  
-  
-  
 
   app.get('/yourActiveLobby', (req, res) => {
     res.render('yourActiveLobby.ejs', {
@@ -598,12 +586,16 @@ async function main() {
   app.use(express.urlencoded());
   app.post('/search', async (req, res) => {
     try {
-      searchName = req.body.search;
-      const response = await fetch(
-        `https://api.rawg.io/api/games?key=${apiKey}&tags=co-op&search=${encodeURIComponent(
-          searchName
-        )}`
-      );
+      let searchName = req.body.search?.trim();
+      let apiUrl = `https://api.rawg.io/api/games?key=${apiKey}&tags=co-op`;
+
+      // if seach exists
+      if (searchName) {
+        apiUrl += `&search=${encodeURIComponent(searchName)}`;
+      } else {
+        searchName = 'All Games';
+      }
+      const response = await fetch(apiUrl);
 
       if (!response.ok) throw new Error('Failed to fetch from RAWG API');
 
