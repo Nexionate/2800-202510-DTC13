@@ -140,11 +140,9 @@
         if (genre) url += `&genres=${genre}`;
         if (ordering) url += `&ordering=${ordering}`;
         if (searchName) url += `&search=${searchName}`;
-        console.log(url);
 
         const response = await fetch(url);
         const data = await response.json();
-        console.log(data.results);
         renderGames(data.results);
         document.getElementById('pageNum').textContent = `Page ${page}`;
       }
@@ -171,14 +169,12 @@
         // Now your JS code can safely interact with the DOM
         document.getElementById('nextPage').addEventListener('click', () => {
           currentPage++;
-          console.log("Next page: clicked");
           fetchGames(currentPage);
         });
 
         document.getElementById('prevPage').addEventListener('click', () => {
           if (currentPage > 1) {
             currentPage--;
-            console.log('Prev page: clicked');
             fetchGames(currentPage);
           }
         });
@@ -188,7 +184,6 @@
           .getElementById('applyFilters')
           .addEventListener('click', () => {
             currentPage = 1; // Reset to page 1 when filters are applied
-            console.log("Apply Filters: clicked");
             fetchGames(currentPage);
           });
 
