@@ -40,91 +40,6 @@
     </style>
 
     <button onclick="window.location.href='/home'">Home</button>
-
-    <script>
-      const apiKey = 'f61c15c68f3246a3aeebcfa53cdef84f'; // Replace with your actual RAWG API key
-      let currentPage = 1;
-
-      async function loadFilterOptions() {
-        const [genresRes, platformsRes, tagsRes] = await Promise.all([
-          fetch(`https://api.rawg.io/api/genres?key=${apiKey}`),
-        ]);
-
-        const genres = await genresRes.json();
-
-        populateSelect('genre', genres.results);
-      }
-
-      function populateSelect(id, items) {
-        const select = document.getElementById(id);
-        items.forEach((item) => {
-          const option = document.createElement('option');
-          option.value = item.slug || item.id;
-          option.textContent = item.name;
-          select.appendChild(option);
-        });
-      }
-
-      async function fetchGames(page = 1) {
-        const genre = document.getElementById('genre').value;
-        const ordering = document.getElementById('ordering').value;
-
-        let url = `https://api.rawg.io/api/games?key=${apiKey}&page_size=18&page=${page}&tags=multiplayer,co-op`;
-
-        if (genre) url += `&genres=${genre}`;
-        if (ordering) url += `&ordering=${ordering}`;
-
-        const response = await fetch(url);
-        const data = await response.json();
-        renderGames(data.results);
-        document.getElementById('pageNum').textContent = `Page ${page}`;
-      }
-
-      function renderGames(games) {
-        const grid = document.getElementById('game-grid');
-        grid.innerHTML = ''; // Clear current content
-
-        games.forEach((game) => {
-          const div = document.createElement('div');
-          div.classList.add('game-card');
-          div.innerHTML = `
-            <a href="/gameDescription/${game.id}">
-                <img src="${game.background_image}" alt="${game.name}" style="cursor:pointer;" />
-                <h3>${game.name}</h3>
-            </a>
-        `;
-          grid.appendChild(div);
-        });
-      }
-
-      // Pagination handlers
-      document.addEventListener('DOMContentLoaded', () => {
-        // Now your JS code can safely interact with the DOM
-        document.getElementById('nextPage').addEventListener('click', () => {
-          currentPage++;
-          fetchGames(currentPage);
-        });
-
-        document.getElementById('prevPage').addEventListener('click', () => {
-          if (currentPage > 1) {
-            currentPage--;
-            fetchGames(currentPage);
-          }
-        });
-
-        // Apply filters and fetch games
-        document
-          .getElementById('applyFilters')
-          .addEventListener('click', () => {
-            currentPage = 1; // Reset to page 1 when filters are applied
-            fetchGames(currentPage);
-          });
-
-        // Initial fetch
-        loadFilterOptions();
-        fetchGames(currentPage);
-      });
-    </script>
   </head>
 
   <body>
@@ -189,4 +104,93 @@
       <button id="nextPage">Next</button>
     </div>
   </body>
+  <script>
+    // Embed EJS server-side data into JS variable. DO NOT CHANGE
+    const initialGames = <%- JSON.stringify(games) %>;
+    const searchName = <%- JSON.stringify(searchName) %>;
+    renderGames(initialGames);
+
+    const apiKey = 'f61c15c68f3246a3aeebcfa53cdef84f'; // Replace with your actual RAWG API key
+    let currentPage = 1;
+
+    async function loadFilterOptions() {
+      const [genresRes, platformsRes, tagsRes] = await Promise.all([
+        fetch(`https://api.rawg.io/api/genres?key=${apiKey}`),
+      ]);
+
+      const genres = await genresRes.json();
+
+      populateSelect('genre', genres.results);
+    }
+
+    function populateSelect(id, items) {
+      const select = document.getElementById(id);
+      items.forEach((item) => {
+        const option = document.createElement('option');
+        option.value = item.slug || item.id;
+        option.textContent = item.name;
+        select.appendChild(option);
+      });
+    }
+
+    async function fetchGames(page = 1) {
+      const genre = document.getElementById('genre').value;
+      const ordering = document.getElementById('ordering').value;
+
+      let url = `https://api.rawg.io/api/games?key=${apiKey}&page_size=18&page=${page}&tags=multiplayer,co-op`;
+
+      if (genre) url += `&genres=${genre}`;
+      if (ordering) url += `&ordering=${ordering}`;
+      if (searchName) url += `&search=${searchName}`;
+
+      const response = await fetch(url);
+      const data = await response.json();
+      renderGames(data.results);
+      document.getElementById('pageNum').textContent = `Page ${page}`;
+    }
+
+    function renderGames(games) {
+      const grid = document.getElementById('game-grid');
+      grid.innerHTML = ''; // Clear current content
+
+      games.forEach((game) => {
+        const div = document.createElement('div');
+        div.classList.add('game-card');
+        div.innerHTML = `
+          <a href="/gameDescription/${game.id}">
+              <img src="${game.background_image}" alt="${game.name}" style="cursor:pointer;" />
+              <h3>${game.name}</h3>
+          </a>
+      `;
+        grid.appendChild(div);
+      });
+    }
+
+    // Pagination handlers
+    document.addEventListener('DOMContentLoaded', () => {
+      // Now your JS code can safely interact with the DOM
+      document.getElementById('nextPage').addEventListener('click', () => {
+        currentPage++;
+        fetchGames(currentPage);
+      });
+
+      document.getElementById('prevPage').addEventListener('click', () => {
+        if (currentPage > 1) {
+          currentPage--;
+          fetchGames(currentPage);
+        }
+      });
+
+      // Apply filters and fetch games
+      document
+        .getElementById('applyFilters')
+        .addEventListener('click', () => {
+          currentPage = 1; // Reset to page 1 when filters are applied
+          fetchGames(currentPage);
+        });
+
+      // Initial fetch
+      loadFilterOptions();
+    });
+  </script>
 </html>
