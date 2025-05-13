@@ -105,6 +105,7 @@
     <script>
       // Embed EJS server-side data into JS variable. DO NOT CHANGE
       const initialGames = <%- JSON.stringify(games) %>;
+      const searchName = <%- JSON.stringify(searchName) %>;
       renderGames(initialGames);
 
       const apiKey = 'f61c15c68f3246a3aeebcfa53cdef84f'; // Replace with your actual RAWG API key
@@ -138,6 +139,8 @@
 
         if (genre) url += `&genres=${genre}`;
         if (ordering) url += `&ordering=${ordering}`;
+        if (searchName) url += `&search=${searchName}`;
+        console.log(url);
 
         const response = await fetch(url);
         const data = await response.json();
