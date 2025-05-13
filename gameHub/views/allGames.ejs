@@ -40,8 +40,73 @@
     </style>
 
     <button onclick="window.location.href='/home'">Home</button>
+  </head>
+
+  <body>
+    <h1 style="text-align: center">All Games</h1>
+
+    <div id="sidebar">
+      <h3>Filter Games</h3>
+      <form action="/search" method="post">
+        <input
+          type="text"
+          name="search"
+          placeholder="Search..."
+          class="border-1 border-black w-full rounded-lg"
+        />
+      </form>
+      <label for="genre">Genre:</label>
+      <select id="genre">
+        <option value="">All</option>
+      </select>
+
+      <label for="ordering">Sort By:</label>
+      <select id="ordering">
+        <option value="">Default</option>
+        <option value="-rating">Top Rated</option>
+        <option value="-released">Newest</option>
+        <option value="name">A–Z</option>
+      </select>
+
+      <button id="applyFilters">Apply Filters</button>
+    </div>
+
+    <h1>Results for "<%= filters.name %>"</h1>
+
+    <div class="games-list" id="game-grid">
+      <!-- Debug code -->
+      <!-- <pre><%= JSON.stringify(games, null, 2) %></pre> -->
+
+      <% if (games.length === 0) { %>
+      <p>No games found.</p>
+      <% } else { %> <% games.forEach(game => { %>
+      <div class="game-card">
+        <!-- Need styling here -->
+        <h2><%= game.name %></h2>
+        <% if (game.background_image) { %>
+        <img
+          src="<%= game.background_image %>"
+          alt="<%= game.name %>"
+          width="300px"
+        />
+        <% } else { %>
+        <p>No image available.</p>
+        <% } %>
+      </div>
+      <% }); %> <% } %>
+    </div>
+
+    <div class="pagination">
+      <button id="prevPage">Previous</button>
+      <span id="pageNum">Page 1</span>
+      <button id="nextPage">Next</button>
+    </div>
 
     <script>
+      // Embed EJS server-side data into JS variable. DO NOT CHANGE
+      const initialGames = <%- JSON.stringify(games) %>;
+      renderGames(initialGames);
+
       const apiKey = 'f61c15c68f3246a3aeebcfa53cdef84f'; // Replace with your actual RAWG API key
       let currentPage = 1;
 
@@ -76,6 +141,7 @@
 
         const response = await fetch(url);
         const data = await response.json();
+        console.log(data.results);
         renderGames(data.results);
         document.getElementById('pageNum').textContent = `Page ${page}`;
       }
@@ -102,12 +168,14 @@
         // Now your JS code can safely interact with the DOM
         document.getElementById('nextPage').addEventListener('click', () => {
           currentPage++;
+          console.log("Next page: clicked");
           fetchGames(currentPage);
         });
 
         document.getElementById('prevPage').addEventListener('click', () => {
           if (currentPage > 1) {
             currentPage--;
+            console.log('Prev page: clicked');
             fetchGames(currentPage);
           }
         });
@@ -117,76 +185,13 @@
           .getElementById('applyFilters')
           .addEventListener('click', () => {
             currentPage = 1; // Reset to page 1 when filters are applied
+            console.log("Apply Filters: clicked");
             fetchGames(currentPage);
           });
 
         // Initial fetch
         loadFilterOptions();
-        fetchGames(currentPage);
       });
     </script>
-  </head>
-
-  <body>
-    <h1 style="text-align: center">All Games</h1>
-
-    <div id="sidebar">
-      <h3>Filter Games</h3>
-      <form action="/search" method="post">
-        <input
-          type="text"
-          name="search"
-          placeholder="Search..."
-          class="border-1 border-black w-full rounded-lg"
-        />
-      </form>
-      <label for="genre">Genre:</label>
-      <select id="genre">
-        <option value="">All</option>
-      </select>
-
-      <label for="ordering">Sort By:</label>
-      <select id="ordering">
-        <option value="">Default</option>
-        <option value="-rating">Top Rated</option>
-        <option value="-released">Newest</option>
-        <option value="name">A–Z</option>
-      </select>
-
-      <button id="applyFilters">Apply Filters</button>
-    </div>
-
-    <h1>Results for "<%= filters.name %>"</h1>
-
-    <div class="games-list">
-      <!-- Debug code -->
-      <!-- <pre><%= JSON.stringify(games, null, 2) %></pre> -->
-
-      <% if (games.length === 0) { %>
-      <p>No games found.</p>
-      <% } else { %> <% games.forEach(game => { %>
-      <div class="game-card">
-        <!-- Need styling here -->
-        <h2><%= game.name %></h2>
-        <% if (game.background_image) { %>
-        <img
-          src="<%= game.background_image %>"
-          alt="<%= game.name %>"
-          width="300"
-        />
-        <% } else { %>
-        <p>No image available.</p>
-        <% } %>
-      </div>
-      <% }); %> <% } %>
-    </div>
-
-    <div id="game-grid"></div>
-
-    <div class="pagination">
-      <button id="prevPage">Previous</button>
-      <span id="pageNum">Page 1</span>
-      <button id="nextPage">Next</button>
-    </div>
   </body>
 </html>
