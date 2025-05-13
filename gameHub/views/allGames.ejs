@@ -6,6 +6,8 @@
     <style>
       body {
         font-family: sans-serif;
+        background-color: black;
+        color: white;
       }
 
       #game-grid {
@@ -21,6 +23,7 @@
         overflow: hidden;
         padding: 10px;
         text-align: center;
+        background-color: white;
       }
 
       .game-card img {
@@ -37,46 +40,57 @@
         padding: 10px 20px;
         margin: 0 10px;
       }
+
+      .sidebar {
+        text-align: center;
+      }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
     <button onclick="window.location.href='/home'">Home</button>
   </head>
 
   <body>
-    <h1 style="text-align: center">All Games</h1>
+    <h1
+      class="text-4xl flex flex-row gap-4 text-white justify-center mx-auto flex-wrap font-bold py-4"
+    >
+      All Games
+    </h1>
 
-    <div id="sidebar">
-      <h3>Filter Games</h3>
+    <div id="sidebar" class="px-4 mx-4 py-3 border border-white rounded-lg">
       <form action="/search" method="post">
+        <label for="search" class="text-2xl">Search: </label>
         <input
           type="text"
           name="search"
           placeholder="Search..."
-          class="border-1 border-black w-full rounded-lg"
+          class="border border-black w-1/2 rounded-lg bg-white px-4 py-2"
         />
       </form>
+      <h3 class="underline py-3">Filter Games</h3>
       <label for="genre">Genre:</label>
-      <select id="genre">
+      <select id="genre" class="border border-white">
         <option value="">All</option>
       </select>
 
       <label for="ordering">Sort By:</label>
-      <select id="ordering">
+      <select id="ordering" class="border border-white">
         <option value="">Default</option>
         <option value="-rating">Top Rated</option>
         <option value="-released">Newest</option>
         <option value="name">A–Z</option>
       </select>
 
-      <button id="applyFilters">Apply Filters</button>
+      <button id="applyFilters" class="border-white border rounded-lg px-1">
+        Apply Filters
+      </button>
     </div>
 
-    <h1>Results for "<%= filters.name %>"</h1>
+    <h1 class="text-2xl text-white font-bold mb-4 text-center pt-3">
+      Results for "<%= filters.name %>"
+    </h1>
 
-    <div class="games-list">
-      <!-- Debug code -->
-      <!-- <pre><%= JSON.stringify(games, null, 2) %></pre> -->
-
+    <div class="games-list" id="game-grid">
       <% if (games.length === 0) { %>
       <p>No games found.</p>
       <% } else { %> <% games.forEach(game => { %>
@@ -95,8 +109,6 @@
       </div>
       <% }); %> <% } %>
     </div>
-
-    <div id="game-grid"></div>
 
     <div class="pagination">
       <button id="prevPage">Previous</button>

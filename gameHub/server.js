@@ -5,7 +5,10 @@ const bcrypt = require('bcrypt');
 const app = express();
 const path = require('path');
 const { type } = require('os');
-const fetch = require('node-fetch');
+// const fetch = require('node-fetch');
+// const { default: fetch } = await import('node-fetch');
+const fetch = (...args) =>
+  import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
 // api key: f61c15c68f3246a3aeebcfa53cdef84f
 
