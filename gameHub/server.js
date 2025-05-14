@@ -31,7 +31,7 @@ const userModel = new mongoose.model('users', userSchema);
 main().catch((err) => console.log(err));
 
 async function main() {
-  await mongoose.connect('mongodb://127.0.0.1:27017/GameHub');
+  await mongoose.connect('mongodb+srv://timothyakim21:wLO450pzaWlXOwya@cluster0.9ighx2c.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0');
   app.use(express.static(path.join(__dirname, 'public')));
   app.use(express.json());
 
@@ -103,7 +103,7 @@ async function main() {
       );
     }
     if (!user) {
-      return res.status(400).json({ message: 'User not found!' });
+      return res.redirect('/login/?error=User%20not%20found!');
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
@@ -112,7 +112,7 @@ async function main() {
       req.session.user = user;
       res.redirect('/home');
     } else {
-      res.status(401).json({ message: 'Invalid credentials!' });
+      res.redirect('/login/?error=Invalid%20credentials!');
     }
   });
 
@@ -126,7 +126,7 @@ async function main() {
 
     const userExists = await userModel.findOne({ username });
     if (userExists) {
-      return res.status(400).json({ message: 'Username already taken!' });
+      return res.redirect('/login/?error=Username%20already%20taken!');
     }
 
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
