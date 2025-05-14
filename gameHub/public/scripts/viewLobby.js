@@ -26,7 +26,6 @@ const fetchLobbies = () => {
           // this is untested
           const joinBtn = document.createElement("button");
           joinBtn.innerText = "Join";
-          editBtn.classList.add("bg-green-500", "hover:bg-green-700", "rounded-lg", "text-white", "font-semibold", "py-2", "px-4", "transition", "hover:scale-[1.01]", "ease-in-out", "shadow:md");
           joinBtn.onclick = () => {
             fetch(`/joinLobby/${lobby.lobbyId}`, { method: "POST" })
               .then((res) => {
