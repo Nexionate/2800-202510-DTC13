@@ -590,7 +590,7 @@ async function main() {
   app.post('/search', async (req, res) => {
     try {
       let searchName = req.body.search?.trim();
-      let apiUrl = `https://api.rawg.io/api/games?key=${apiKey}&tags=co-op`;
+      let apiUrl = `https://api.rawg.io/api/games?key=${apiKey}&page_size=18&tags=co-op`;
 
       // if seach exists
       if (searchName) {
