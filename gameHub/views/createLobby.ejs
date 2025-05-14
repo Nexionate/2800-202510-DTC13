@@ -29,8 +29,40 @@
         <div class="space-y-3">
 
           <label for="gameName">Game Name:</label>
-          <input type="text" id="gameName" name="gameName" required
-            class="border-1 border-gray-300 pr-8 ml-1 rounded-md"><br>
+          <select id="gameName" name="gameName" required
+            class="border-1 border-gray-300 ml-1 rounded-md px-2">
+            <option value="">Loading...</option>
+          </select><br>
+
+          <script>
+            const apiKey = 'f61c15c68f3246a3aeebcfa53cdef84f';
+          
+            async function populateGameDropdown() {
+              try {
+                const response = await fetch(`https://api.rawg.io/api/games?key=${apiKey}&page_size=20`);
+                const data = await response.json();
+          
+                const select = document.getElementById('gameName');
+                select.innerHTML = ""; // Clear "Loading..."
+          
+                data.results.forEach(game => {
+                  const option = document.createElement('option');
+                  option.value = game.name;
+                  option.textContent = game.name;
+                  select.appendChild(option);
+                });
+              } catch (error) {
+                console.error("Failed to fetch games:", error);
+                const select = document.getElementById('gameName');
+                select.innerHTML = "<option value=''>Failed to load games</option>";
+              }
+            }
+          
+            // Call this after the DOM is ready
+            document.addEventListener("DOMContentLoaded", populateGameDropdown);
+          </script>
+          
+          
 
           <label for="lobbyName">Lobby Name:</label>
           <input type="text" id="lobbyName" name="lobbyName" required
@@ -54,7 +86,7 @@
         <div class="flex flex-row justify-between">
 
           <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded shadow-md transition hover:scale-[1.01] ease-in-out">Create Lobby</button>
-          <button onclick="window.location.href='/home'"
+          <button onclick="window.location.href='/yourActiveLobby'"
             class=" bg-red-500 hover:bg-red-400 text-white px-4 py-2 rounded shadow-md transition hover:scale-[1.01] ease-in-out">
             Cancel Lobby
           </button>
