@@ -96,16 +96,16 @@ async function main() {
 
     const user = await userModel.findOne({ username: username });
 
+    if (!user) {
+      return res.redirect('/login/?error=User%20not%20found!');
+    }
+
     if (user.displayName == null) {
       await userModel.updateOne(
         { username },
         { $set: { displayName: username } }
       );
     }
-    if (!user) {
-      return res.redirect('/login/?error=User%20not%20found!');
-    }
-
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (passwordMatch) {
