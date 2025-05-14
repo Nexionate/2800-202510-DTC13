@@ -1,193 +1,229 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>All games</title>
-    <style>
 
-      #game-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 20px;
-        margin: 20px;
+<head>
+  <meta charset="UTF-8" />
+  <title>All games</title>
+  <style>
+    #game-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+      margin: 20px;
+    }
+
+    .game-card {
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      overflow: hidden;
+      padding: 10px;
+      text-align: center;
+      background-color: white;
+      color: black;
+    }
+
+    .game-card img {
+      width: 100%;
+      height: auto;
+    }
+
+    .pagination {
+      text-align: center;
+      margin: 20px;
+    }
+
+    .pagination button {
+      padding: 10px 20px;
+      margin: 0 10px;
+    }
+
+    .sidebar {
+      text-align: center;
+    }
+
+    @keyframes kenburns {
+      0% {
+        transform: scale(1) translate(0, 0);
+        opacity: 0;
       }
 
-      .game-card {
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        overflow: hidden;
-        padding: 10px;
-        text-align: center;
-        background-color: white;
-        color: black;
+      10% {
+        opacity: 1;
       }
 
-      .game-card img {
-        width: 100%;
-        height: auto;
+      90% {
+        opacity: 1;
       }
 
-      .pagination {
-        text-align: center;
-        margin: 20px;
+      100% {
+        transform: scale(1.1) translate(-3%, -3%);
+        opacity: 0;
       }
+    }
 
-      .pagination button {
-        padding: 10px 20px;
-        margin: 0 10px;
-      }
+    .kenburns-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-size: cover;
+      background-position: center;
+      animation: kenburns 30s ease-in-out infinite;
+      opacity: 0;
+      filter: brightness(1.3);
+      z-index: -10;
+    }
 
-      .sidebar {
-        text-align: center;
-      }
+    .kenburns-image:nth-child(1) {
+      animation-delay: 0s;
+    }
 
-      @keyframes kenburns {
-            0% {
-                transform: scale(1) translate(0, 0);
-                opacity: 0;
-            }
+    .kenburns-image:nth-child(2) {
+      animation-delay: 3s;
+    }
 
-            10% {
-                opacity: 1;
-            }
+    .kenburns-image:nth-child(3) {
+      animation-delay: 6s;
+    }
 
-            90% {
-                opacity: 1;
-            }
+    .kenburns-image:nth-child(4) {
+      animation-delay: 9s;
+    }
 
-            100% {
-                transform: scale(1.1) translate(-3%, -3%);
-                opacity: 0;
-            }
-        }
+    .kenburns-image:nth-child(5) {
+      animation-delay: 12s;
+    }
 
-        .kenburns-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-size: cover;
-            background-position: center;
-            animation: kenburns 30s ease-in-out infinite;
-            opacity: 0;
-            filter: brightness(1.3);
-            z-index: -10;
-        }
+    .kenburns-image:nth-child(6) {
+      animation-delay: 15s;
+    }
 
-        .kenburns-image:nth-child(1) {
-            animation-delay: 0s;
-        }
+    .kenburns-image:nth-child(7) {
+      animation-delay: 18s;
+    }
 
-        .kenburns-image:nth-child(2) {
-            animation-delay: 3s;
-        }
+    .kenburns-image:nth-child(8) {
+      animation-delay: 21s;
+    }
 
-        .kenburns-image:nth-child(3) {
-            animation-delay: 6s;
-        }
+    .kenburns-image:nth-child(9) {
+      animation-delay: 24s;
+    }
 
-        .kenburns-image:nth-child(4) {
-            animation-delay: 9s;
-        }
+    .kenburns-image:nth-child(10) {
+      animation-delay: 27s;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
-        .kenburns-image:nth-child(5) {
-            animation-delay: 12s;
-        }
 
-        .kenburns-image:nth-child(6) {
-            animation-delay: 15s;
-        }
+</head>
 
-        .kenburns-image:nth-child(7) {
-            animation-delay: 18s;
-        }
+<body class=" relative font-sans bg-black text-white">
 
-        .kenburns-image:nth-child(8) {
-            animation-delay: 21s;
-        }
 
-        .kenburns-image:nth-child(9) {
-            animation-delay: 24s;
-        }
+  <!-- Ken Burns Background -->
+  <div id="kenburns-bg-wrapper" class="fixed inset-0 z-0 overflow-hidden"></div>
+  <!-- Dark overlay to soften background brightness -->
+  <div class="fixed inset-0 bg-black/70 z-10 pointer-events-none"></div>
+  <!-- Nav Bar -->
+  <div class="flex flex-row justify-center pt-2 pb-2 text-md text-white space-x-5 bg-[#000000] relative z-10">
+    <button class="px-3 text-white" onclick="window.location.href='/home'">
+      Home
+    </button>
+    <button class="px-3 text-white" onclick="window.location.href='/profile'">
+      Profile
+    </button>
+    <form class="px-3 text-white" action="/logout">
+      <input type="submit" value="Logout" />
+    </form>
+  </div>
+  <h1 class="relative z-20 text-4xl flex flex-row gap-4 text-white justify-center mx-auto flex-wrap font-bold py-4">
+    All Games
+  </h1>
 
-        .kenburns-image:nth-child(10) {
-            animation-delay: 27s;
-        }
-    </style>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <div id="sidebar" class="relative z-20 px-4 mx-4 py-3 border border-white rounded-lg">
+    <form action="/search" method="post">
+      <label for="search" class="text-2xl">Search: </label>
+      <input type="text" name="search" placeholder="Search..."
+        class="border border-black w-1/2 rounded-lg bg-white px-4 py-2 text-black" />
+    </form>
+    <h3 class="underline py-3">Filter Games</h3>
+    <label for="genre">Genre:</label>
+    <select id="genre" class="border border-white text-black bg-white">
+      <option value="">All</option>
+    </select>
 
-    <button 
-  class="relative z-20 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition mt-8 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300"
-  onclick="window.location.href='/home'">
-  Home
-</button>
+    <label for="ordering">Sort By:</label>
+    <select id="ordering" class="border border-white text-black bg-white">
+      <option value="">Default</option>
+      <option value="-rating">Top Rated</option>
+      <option value="-released">Newest</option>
+      <option value="name">A–Z</option>
+    </select>
 
-  </head>
-
-  <body class=" relative font-sans bg-black text-white">
-
-    <!-- Ken Burns Background -->
-    <div id="kenburns-bg-wrapper" class="fixed inset-0 z-0 overflow-hidden"></div>
-    <!-- Dark overlay to soften background brightness -->
-    <div class="fixed inset-0 bg-black/70 z-10 pointer-events-none"></div>
-
-    <h1
-      class="relative z-20 text-4xl flex flex-row gap-4 text-white justify-center mx-auto flex-wrap font-bold py-4"
-    >
-      All Games
-    </h1>
-
-    <div id="sidebar" class="relative z-20 px-4 mx-4 py-3 border border-white rounded-lg">
-      <form action="/search" method="post">
-        <label for="search" class="text-2xl">Search: </label>
-        <input type="text" name="search" placeholder="Search..."
-          class="border border-black w-1/2 rounded-lg bg-white px-4 py-2 text-black" />
-      </form>
-      <h3 class="underline py-3">Filter Games</h3>
-      <label for="genre">Genre:</label>
-      <select id="genre" class="border border-white text-black bg-white">
-        <option value="">All</option>
-      </select>
-    
-      <label for="ordering">Sort By:</label>
-      <select id="ordering" class="border border-white text-black bg-white">
-        <option value="">Default</option>
-        <option value="-rating">Top Rated</option>
-        <option value="-released">Newest</option>
-        <option value="name">A–Z</option>
-      </select>
-    
-      <button id="applyFilters" class="border-white border rounded-lg px-1">
-        Apply Filters
-      </button>
-    </div>
+    <button id="applyFilters" class="border-white border rounded-lg px-1">
+      Apply Filters
+    </button>
+  </div>
 
 
 
-    <h1 class=" relative z-20 text-2xl text-white font-bold mb-4 text-center pt-3">
-      Results for "<%= filters.name %>"
-    </h1>
+  <h1 class=" relative z-20 text-2xl text-white font-bold mb-4 text-center pt-3">
+    Results for "<%= filters.name %>"
+  </h1>
 
-    <div class="games-list relative z-20" id="game-grid">
-      <% if (games.length === 0) { %>
+  <div class="games-list relative z-20" id="game-grid">
+    <% if (games.length===0) { %>
       <p>No games found.</p>
-      <% } else { %> <% games.forEach(game => { %>
-      <div class="game-card">
-        <!-- Need styling here -->
-        <h2><%= game.name %></h2>
-        <% if (game.background_image) { %>
-        <img
-          src="<%= game.background_image %>"
-          alt="<%= game.name %>"
-          width="300"
-        />
-        <% } else { %>
-        <p>No image available.</p>
-        <% } %>
-      </div>
-      <% }); %> <% } %>
-    </div>
+      <% } else { %>
+        <% games.forEach(game=> { %>
+          <div
+            class="game-card tilt-card   bg-white rounded-xl shadow-md  transform hover:scale-101 active:scale-98 ease-in-out hover:scale-[1.01] text-center">
+            <h2 class="text-lg font-semibold mb-2">
+              <%= game.name %>
+            </h2>
+            <% if (game.background_image) { %>
+              <img src="<%= game.background_image %>" alt="<%= game.name %>" width="300"
+                class="rounded object-cover mx-auto" />
+              <% } else { %>
+                <p>No image available.</p>
+                <% } %>
+          </div>
+          <% }); %>
+            <% } %>
+  </div>
+
+  <!-- Tilt + Dynamic Shadow Script -->
+  <script>
+    document.querySelectorAll('.tilt-card').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const rotateX = -(y - centerY) / 20;
+        const rotateY = (x - centerX) / 20;
+
+        const verticalOffset = Math.abs(y - centerY);
+        const shadowY = Math.min(40, verticalOffset / 2);
+        const shadowBlur = Math.min(60, verticalOffset * 1.5);
+
+        card.style.transform = `perspective(600px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.01)`;
+        card.style.boxShadow = `0 ${shadowY}px ${shadowBlur}px rgba(0, 0, 0, 0.2)`;
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+        card.style.boxShadow = '';
+      });
+    });
+  </script>
+
 
     <div class="pagination relative z-20 ">
       <button class="relative z-20 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition mt-8 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300" id="prevPage">Previous</button>
@@ -201,53 +237,53 @@
     const searchName = <%- JSON.stringify(searchName) %>;
     renderGames(initialGames);
 
-    const apiKey = 'f61c15c68f3246a3aeebcfa53cdef84f'; // Replace with your actual RAWG API key
-    let currentPage = 1;
+  const apiKey = 'f61c15c68f3246a3aeebcfa53cdef84f'; // Replace with your actual RAWG API key
+  let currentPage = 1;
 
-    async function loadFilterOptions() {
-      const [genresRes, platformsRes, tagsRes] = await Promise.all([
-        fetch(`https://api.rawg.io/api/genres?key=${apiKey}`),
-      ]);
+  async function loadFilterOptions() {
+    const [genresRes, platformsRes, tagsRes] = await Promise.all([
+      fetch(`https://api.rawg.io/api/genres?key=${apiKey}`),
+    ]);
 
-      const genres = await genresRes.json();
+    const genres = await genresRes.json();
 
-      populateSelect('genre', genres.results);
-    }
+    populateSelect('genre', genres.results);
+  }
 
-    function populateSelect(id, items) {
-      const select = document.getElementById(id);
-      items.forEach((item) => {
-        const option = document.createElement('option');
-        option.value = item.slug || item.id;
-        option.textContent = item.name;
-        select.appendChild(option);
-      });
-    }
+  function populateSelect(id, items) {
+    const select = document.getElementById(id);
+    items.forEach((item) => {
+      const option = document.createElement('option');
+      option.value = item.slug || item.id;
+      option.textContent = item.name;
+      select.appendChild(option);
+    });
+  }
 
-    async function fetchGames(page = 1) {
-      const genre = document.getElementById('genre').value;
-      const ordering = document.getElementById('ordering').value;
+  async function fetchGames(page = 1) {
+    const genre = document.getElementById('genre').value;
+    const ordering = document.getElementById('ordering').value;
 
-      let url = `https://api.rawg.io/api/games?key=${apiKey}&page_size=18&page=${page}&tags=multiplayer,co-op`;
+    let url = `https://api.rawg.io/api/games?key=${apiKey}&page_size=18&page=${page}&tags=multiplayer,co-op`;
 
-      if (genre) url += `&genres=${genre}`;
-      if (ordering) url += `&ordering=${ordering}`;
-      if (searchName) url += `&search=${searchName}`;
+    if (genre) url += `&genres=${genre}`;
+    if (ordering) url += `&ordering=${ordering}`;
+    if (searchName) url += `&search=${searchName}`;
 
-      const response = await fetch(url);
-      const data = await response.json();
-      renderGames(data.results);
-      document.getElementById('pageNum').textContent = `Page ${page}`;
-    }
+    const response = await fetch(url);
+    const data = await response.json();
+    renderGames(data.results);
+    document.getElementById('pageNum').textContent = `Page ${page}`;
+  }
 
-    function renderGames(games) {
-      const grid = document.getElementById('game-grid');
-      grid.innerHTML = ''; // Clear current content
+  function renderGames(games) {
+    const grid = document.getElementById('game-grid');
+    grid.innerHTML = ''; // Clear current content
 
-      games.forEach((game) => {
-        const div = document.createElement('div');
-        div.classList.add('game-card');
-        div.innerHTML = `
+    games.forEach((game) => {
+      const div = document.createElement('div');
+      div.classList.add('game-card');
+      div.innerHTML = `
           <a href="/gameDescription/${game.id}">
               <img src="${game.background_image}" alt="${game.name}" style="cursor:pointer;" />
               <h3>${game.name}</h3>
@@ -255,50 +291,51 @@
               
           </a>
       `;
-        grid.appendChild(div);
-      });
-    }
+      grid.appendChild(div);
+    });
+  }
 
-    // Pagination handlers
-    document.addEventListener('DOMContentLoaded', () => {
-      // Now your JS code can safely interact with the DOM
-      document.getElementById('nextPage').addEventListener('click', () => {
-        currentPage++;
+  // Pagination handlers
+  document.addEventListener('DOMContentLoaded', () => {
+    // Now your JS code can safely interact with the DOM
+    document.getElementById('nextPage').addEventListener('click', () => {
+      currentPage++;
+      fetchGames(currentPage);
+    });
+
+    document.getElementById('prevPage').addEventListener('click', () => {
+      if (currentPage > 1) {
+        currentPage--;
+        fetchGames(currentPage);
+      }
+    });
+
+    // Apply filters and fetch games
+    document
+      .getElementById('applyFilters')
+      .addEventListener('click', () => {
+        currentPage = 1; // Reset to page 1 when filters are applied
         fetchGames(currentPage);
       });
 
-      document.getElementById('prevPage').addEventListener('click', () => {
-        if (currentPage > 1) {
-          currentPage--;
-          fetchGames(currentPage);
+    // Initial fetch
+    loadFilterOptions();
+  });
+
+  const wrapper = document.getElementById('kenburns-bg-wrapper');
+
+  fetch(`https://api.rawg.io/api/games?key=${apiKey}&tags=multiplayer,co-op&page_size=10`)
+    .then((res) => res.json())
+    .then((data) => {
+      data.results.forEach((game) => {
+        if (game.background_image) {
+          const bg = document.createElement('div');
+          bg.className = 'kenburns-image';
+          bg.style.backgroundImage = `url(${game.background_image})`;
+          wrapper.appendChild(bg);
         }
       });
-
-      // Apply filters and fetch games
-      document
-        .getElementById('applyFilters')
-        .addEventListener('click', () => {
-          currentPage = 1; // Reset to page 1 when filters are applied
-          fetchGames(currentPage);
-        });
-
-      // Initial fetch
-      loadFilterOptions();
     });
+</script>
 
-    const wrapper = document.getElementById('kenburns-bg-wrapper');
-
-      fetch(`https://api.rawg.io/api/games?key=${apiKey}&tags=multiplayer,co-op&page_size=10`)
-        .then((res) => res.json())
-        .then((data) => {
-          data.results.forEach((game) => {
-            if (game.background_image) {
-              const bg = document.createElement('div');
-              bg.className = 'kenburns-image';
-              bg.style.backgroundImage = `url(${game.background_image})`;
-              wrapper.appendChild(bg);
-            }
-          });
-        });
-  </script>
 </html>
