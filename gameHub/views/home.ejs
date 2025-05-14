@@ -267,7 +267,7 @@
       const wrapper = document.getElementById('kenburns-bg-wrapper');
 
       fetch(
-        `https://api.rawg.io/api/games?key=${apiKey}&tags=multiplayer,co-op&page_size=10`
+        `https://api.rawg.io/api/games?key=${apiKey}&tags=multiplayer,co-op&page_size=10&page=3`
       )
         .then((res) => res.json())
         .then((data) => {
