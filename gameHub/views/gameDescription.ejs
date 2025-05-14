@@ -34,33 +34,46 @@
 
 <!-- ✅ Fixed body with ID and background classes -->
 
-<body id="page-body" class="min-h-screen bg-cover bg-center flex items-center justify-center relative text-center">
-
-  <!-- ✅ Dark gradient overlay for readability -->
-  <div class="absolute inset-0 bg-gradient-to-br from-black/80 via-black/60 to-black/70 z-0"></div>
-
-  <!-- Top-left Home Button -->
-  <div class="absolute top-4 left-4 z-10">
-    <button onclick="window.location.href='/home'"
-      class="bg-blue-600 hover:bg-blue-800 text-white font-semibold py-2 px-4 rounded">
-      Home
-    </button>
+<body>
+  
+  <div class="relative z-20">
+    <!-- Navigation bar -->
+    <div class="flex flex-row justify-center pt-2 pb-2 text-md text-white space-x-5 bg-[#000000] relative z-10">
+      <button class="px-3" onclick="window.location.href='/home'">
+        Home
+      </button>
+      <button class="px-3" onclick="window.location.href='/profile'">
+        Profile
+      </button>
+      <button class="px-3" onclick="window.location.href='/help'">
+        Help
+      </button>
+      <form class="px-3" action="/logout">
+        <input type="submit" value="Logout" />
+      </form>
+    </div>
   </div>
 
-  <!-- Centered Card -->
-  <div class="card bg-white rounded-xl shadow-lg p-8 w-full max-w-3xl flex flex-col items-center z-10">
-    <h1 id="game-title" class="text-2xl font-bold mb-4"></h1>
-    <img id="game-image" src="" alt="Game image" class="w-full max-w-md rounded mb-4" />
-    <p id="game-description" class="mb-6"></p>
-    <div class="flex flex-col sm:flex-row gap-4">
-      <button onclick="window.location.href='/createLobby/<%= gameId %>'"
-        class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition hover:scale-[1.01] ease-in-out shadow:md">
-        Create Lobby
-      </button>
-      <button onclick="window.location.href='/viewLobbies'"
-        class="bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded transition hover:scale-[1.01] ease-in-out shadow:md">
-        Join Lobby
-      </button>
+  <div id="page-body" class="min-h-screen bg-cover bg-center flex items-center justify-center relative text-center">
+    
+    <!-- ✅ Dark gradient overlay for readability -->
+    <div class="absolute inset-0 bg-gradient-to-br from-black/80 via-black/60 to-black/70 z-0"></div>
+    
+    <!-- Centered Card -->
+    <div class="card bg-white rounded-xl shadow-lg p-8 w-full max-w-3xl flex flex-col items-center z-10">
+      <h1 id="game-title" class="text-2xl font-bold mb-4"></h1>
+      <img id="game-image" src="" alt="Game image" class="w-full max-w-md rounded mb-4" />
+      <p id="game-description" class="mb-6"></p>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <button onclick="window.location.href='/createLobby/<%= gameId %>'"
+          class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition hover:scale-[1.01] ease-in-out shadow:md">
+          Create Lobby
+        </button>
+        <button onclick="window.location.href='/viewLobbies'"
+          class="bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded transition hover:scale-[1.01] ease-in-out shadow:md">
+          Join Lobby
+        </button>
+      </div>
     </div>
   </div>
 </body>

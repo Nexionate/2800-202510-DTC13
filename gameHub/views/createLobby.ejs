@@ -6,19 +6,109 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   <title>Document</title>
+  <style>
+    @keyframes kenburns {
+            0% {
+                transform: scale(1) translate(0, 0);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1.1) translate(-3%, -3%);
+                opacity: 0;
+            }
+        }
+
+        .kenburns-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-size: cover;
+            background-position: center;
+            animation: kenburns 30s ease-in-out infinite;
+            opacity: 0;
+            filter: brightness(1.3);
+            z-index: 0;
+        }
+
+        .kenburns-image:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .kenburns-image:nth-child(2) {
+            animation-delay: 3s;
+        }
+
+        .kenburns-image:nth-child(3) {
+            animation-delay: 6s;
+        }
+
+        .kenburns-image:nth-child(4) {
+            animation-delay: 9s;
+        }
+
+        .kenburns-image:nth-child(5) {
+            animation-delay: 12s;
+        }
+
+        .kenburns-image:nth-child(6) {
+            animation-delay: 15s;
+        }
+
+        .kenburns-image:nth-child(7) {
+            animation-delay: 18s;
+        }
+
+        .kenburns-image:nth-child(8) {
+            animation-delay: 21s;
+        }
+
+        .kenburns-image:nth-child(9) {
+            animation-delay: 24s;
+        }
+
+        .kenburns-image:nth-child(10) {
+            animation-delay: 27s;
+        }
+  </style>
 </head>
 
-<body class="bg-gray-100 font-sans text-gray-800">
-  <div class="flex flex-row justify-center pt-5 text-md text-slate-500 space-x-5">
-    <button class="px-3" onclick="window.location.href='/home'">Home</button>
-    <button class="px-3" onclick="window.location.href='/profile'">
-      Profile
-    </button>
-    <form class="px-3" action="/logout">
-      <input type="submit" value="Logout" />
-    </form>
+<body class="relative bg-gray-100 font-sans text-gray-800">
+
+  <!-- Ken Burns Background -->
+  <div id="kenburns-bg-wrapper" class="fixed inset-0 z-0 overflow-hidden"></div>
+  <!-- Dark overlay to soften background brightness -->
+  <div class="fixed inset-0 bg-black/70 z-10 pointer-events-none"></div>
+
+  <div class="relative z-20">
+    <!-- Navigation bar -->
+    <div class="flex flex-row justify-center pt-2 pb-2 text-md text-white space-x-5 bg-[#000000] relative z-10">
+      <button class="px-3" onclick="window.location.href='/home'">
+        Home
+      </button>
+      <button class="px-3" onclick="window.location.href='/profile'">
+        Profile
+      </button>
+      <button class="px-3" onclick="window.location.href='/help'">
+        Help
+      </button>
+      <form class="px-3" action="/logout">
+        <input type="submit" value="Logout" />
+      </form>
+    </div>
   </div>
-  <div class="flex flex-row mx-auto  justify-center max-w-3xl pt-5">
+
+  <div class="relative z-20 flex flex-row mx-auto  justify-center max-w-3xl pt-5">
     <div class=" justify-center  bg-white shadow rounded-lg p-4">
       <form action="<%= (typeof gameId !== 'undefined' && gameId) ? '/createLobby/' + gameId : '/createLobby' %>"
         method="POST">
@@ -29,22 +119,21 @@
         <div class="space-y-3">
 
           <label for="gameName">Game Name:</label>
-          <select id="gameName" name="gameName" required
-            class="border-1 border-gray-300 ml-1 rounded-md px-2">
+          <select id="gameName" name="gameName" required class="border-1 border-gray-300 ml-1 rounded-md px-2">
             <option value="">Loading...</option>
           </select><br>
 
           <script>
             const apiKey = 'f61c15c68f3246a3aeebcfa53cdef84f';
-          
+
             async function populateGameDropdown() {
               try {
                 const response = await fetch(`https://api.rawg.io/api/games?key=${apiKey}&page_size=20`);
                 const data = await response.json();
-          
+
                 const select = document.getElementById('gameName');
                 select.innerHTML = ""; // Clear "Loading..."
-          
+
                 data.results.forEach(game => {
                   const option = document.createElement('option');
                   option.value = game.name;
@@ -57,12 +146,12 @@
                 select.innerHTML = "<option value=''>Failed to load games</option>";
               }
             }
-          
+
             // Call this after the DOM is ready
             document.addEventListener("DOMContentLoaded", populateGameDropdown);
           </script>
-          
-          
+
+
 
           <label for="lobbyName">Lobby Name:</label>
           <input type="text" id="lobbyName" name="lobbyName" required
@@ -85,7 +174,9 @@
         </div>
         <div class="flex flex-row justify-between">
 
-          <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded shadow-md transition hover:scale-[1.01] ease-in-out">Create Lobby</button>
+          <button type="submit"
+            class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded shadow-md transition hover:scale-[1.01] ease-in-out">Create
+            Lobby</button>
           <button onclick="window.location.href='/yourActiveLobby'"
             class=" bg-red-500 hover:bg-red-400 text-white px-4 py-2 rounded shadow-md transition hover:scale-[1.01] ease-in-out">
             Cancel Lobby
@@ -93,15 +184,25 @@
         </div>
     </div>
 
-
-
-
-
-
     </form>
   </div>
 
+  <script>
+    const wrapper = document.getElementById('kenburns-bg-wrapper');
 
+    fetch(`https://api.rawg.io/api/games?key=${apiKey}&tags=multiplayer,co-op&page_size=10&page=5`)
+      .then((res) => res.json())
+      .then((data) => {
+        data.results.forEach((game) => {
+          if (game.background_image) {
+            const bg = document.createElement('div');
+            bg.className = 'kenburns-image';
+            bg.style.backgroundImage = `url(${game.background_image})`;
+            wrapper.appendChild(bg);
+          }
+        });
+      });
+  </script>
 </body>
 
 <% if (typeof error !=='undefined' ) { %>

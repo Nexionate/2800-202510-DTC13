@@ -279,6 +279,10 @@ async function main() {
     });
   });
 
+  app.get('/help', (req, res) => {
+    res.render('help.ejs');
+  });
+
   const lobbySchema = new mongoose.Schema({
     lobbyId: {
       type: String,

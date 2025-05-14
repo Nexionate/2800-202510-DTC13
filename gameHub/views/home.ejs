@@ -114,13 +114,12 @@
       <button class="px-3" onclick="window.location.href='/profile'">
         Profile
       </button>
+      <button class="px-3" onclick="window.location.href='/help'">
+        Help
+      </button>
       <form class="px-3" action="/logout">
         <input type="submit" value="Logout" />
       </form>
-    </div>
-
-    <!-- Gradient fade at bottom -->
-    <div class="absolute bottom-0 left-0 w-full h-6 bg-gradient-to-t from-black to-transparent pointer-events-none z-0">
     </div>
   </div>
 
@@ -133,128 +132,23 @@
         class="border border-black w-1/3 rounded-lg bg-white px-4 py-2" />
     </form>
 
-    <div class="text-center">
-      <input type="text" id="aiInput" placeholder="Enter a topic..."
-        class="text-white bg-gray-800 border border-gray-600 rounded px-4 py-2 w-72" />
-      <button onclick="askAIMagic()" class="text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded ml-2">
-        🪄 Magic Wand
-      </button>
-      <div id="aiOutput" class="text-white mt-4"></div>
-    </div>
-
-
-    <script>
-      async function askAIMagic() {
-        const topic = document.getElementById('aiInput').value;
-        const res = await fetch('/magic', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ topic }),
-        });
-
-        const data = await res.json();
-        document.getElementById('aiOutput').innerText =
-          data.result || 'No magic.';
-      }
-    </script>
-    <div class="flex flex-row justify-center">
-      <!-- CREATE A PAGE FOR THE HELP HERE -->
-      <button
-        class=" text-lg bg-slate-600 px-5 py-1 rounded-xl text-white hover:bg-slate-400 transition hover:scale-[1.01] ease-in-out"
-        onclick="window.location.href='/help'">
-        Help
-      </button>
-      <!-- not sure how to get it to redirect -->
-    </div>
-
-    <div class="relative z-20 p-2 gap-4 justify-center mx-auto flex-wrap rounded-xl space-y-1 bg-transparent shadow-md">
-      <div class="px-8 py-4">
-        <h2 class="text-2xl text-white font-bold mb-4">
-          Top 10 Popular Games
-        </h2>
-
-        <% if (games && games.length> 0) { %>
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            <% games.forEach(game=> { %>
-              <div
-                class="tilt-card p-4 rounded-xl text-center shadow-md bg-white transform hover:scale-101 active:scale-98 ease-in-out"
-                data-tilt-id="<%= game.id %>">
-                <h3 class="text-lg font-semibold mb-2">
-                  <%= game.name %>
-                </h3>
-                <p class="text-sm mb-2 text-slate-500">
-                  Rating: <%= game.rating %>
-                </p>
-                <% if (game.background_image) { %>
-                  <a href="/gameDescription/<%= game.id %>">
-                    <img src="<%= game.background_image %>" alt="<%= game.name %>"
-                      class="w-full h-40 object-cover rounded" />
-                  </a>
-                  <% } %>
-              </div>
-              <% }) %>
-          </div>
-          <% } else { %>
-            <p>No games available.</p>
-            <% } %>
-
-              <div class="flex flex-col items-center justify-center text-center space-y-2">
-                <p class="text-slate-400 text-sm m-8 p-0">
-                  See what people are playing!
-                </p>
-                <form action="/search" method="post" class="m-0 p-0">
-                  <button
-                    class="bg-slate-700 px-6 py-3 rounded-xl text-white hover:bg-slate-500 transition hover:scale-[1.01] ease-in-out"
-                    onclick="window.location.href='/allGames'">
-                    View All Games
-                  </button>
-                </form>
-              </div>
-
-
-      </div>
-    </div>
-
-    <!-- Tilt effect script -->
-    <script>
-      document.querySelectorAll('.tilt-card').forEach((card) => {
-        card.addEventListener('mousemove', (e) => {
-          const rect = card.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-
-          const centerX = rect.width / 2;
-          const centerY = rect.height / 2;
-
-          const rotateX = -(y - centerY) / 20;
-          const rotateY = (x - centerX) / 20;
-
-          card.style.transform = `perspective(600px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.01)`;
-        });
-
-        card.addEventListener('mouseleave', () => {
-          card.style.transform = '';
-        });
-      });
-    </script>
-
     <!-- Button Container Matching Card Width -->
     <div class="relative z-20 mx-auto px-8 max-w-4xl">
       <div class="flex space-x-4">
         <button
-          class="flex-1 text-lg bg-slate-700 px-3 py-6 rounded-xl text-white hover:bg-slate-500 transition hover:scale-[1.01] ease-in-out"
+          class="flex-1 text-lg bg-white px-3 py-4 rounded-xl text-black hover:bg-gray-400 transition hover:scale-[1.01] ease-in-out"
           onclick="window.location.href='/createLobby/0'">
           Create a Lobby
         </button>
 
         <button
-          class="flex-1 text-lg bg-slate-700 px-3 py-6 rounded-xl text-white hover:bg-slate-500 transition hover:scale-[1.01] ease-in-out"
+          class="flex-1 text-lg bg-white px-3 py-4 rounded-xl text-black hover:bg-gray-400 transition hover:scale-[1.01] ease-in-out"
           onclick="window.location.href='/viewLobbies'">
           Join a Lobby
         </button>
 
         <button
-          class="flex-1 text-lg bg-slate-500 px-3 py-6 rounded-xl text-white hover:bg-slate-400 transition hover:scale-[1.01] ease-in-out"
+          class="flex-1 text-lg bg-white px-3 py-4 rounded-xl text-black hover:bg-gray-400 transition hover:scale-[1.01] ease-in-out"
           onclick="window.location.href='/yourActiveLobby'">
           Your Active Lobby
         </button>
@@ -262,26 +156,124 @@
     </div>
 
 
-    <script>
-      const apiKey = 'f61c15c68f3246a3aeebcfa53cdef84f';
-      const wrapper = document.getElementById('kenburns-bg-wrapper');
+      <script>
+        async function askAIMagic() {
+          const topic = document.getElementById('aiInput').value;
+          const res = await fetch('/magic', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ topic }),
+          });
 
-      fetch(
-        `https://api.rawg.io/api/games?key=${apiKey}&tags=multiplayer,co-op&page_size=10&page=3`
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          data.results.forEach((game, index) => {
-            if (game.background_image) {
-              const bg = document.createElement('div');
-              bg.className = 'kenburns-image';
-              bg.style.backgroundImage = `url(${game.background_image})`;
-              wrapper.appendChild(bg);
-            }
+          const data = await res.json();
+          document.getElementById('aiOutput').innerText =
+            data.result || 'No magic.';
+        }
+      </script>
+
+
+      <div
+        class="relative z-20 p-2 gap-4 justify-center mx-auto flex-wrap rounded-xl space-y-1 bg-transparent shadow-md">
+        <div class="px-8 py-4">
+          <h2 class="text-2xl text-white font-bold mb-4">
+            Top 10 Popular Games
+          </h2>
+
+          <% if (games && games.length> 0) { %>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+              <% games.forEach(game=> { %>
+                <div
+                  class="tilt-card p-4 rounded-xl text-center shadow-md bg-white transform hover:scale-101 active:scale-98 ease-in-out"
+                  data-tilt-id="<%= game.id %>">
+                  <h3 class="text-lg font-semibold mb-2">
+                    <%= game.name %>
+                  </h3>
+                  <p class="text-sm mb-2 text-slate-500">
+                    Rating: <%= game.rating %>
+                  </p>
+                  <% if (game.background_image) { %>
+                    <a href="/gameDescription/<%= game.id %>">
+                      <img src="<%= game.background_image %>" alt="<%= game.name %>"
+                        class="w-full h-40 object-cover rounded" />
+                    </a>
+                    <% } %>
+                </div>
+                <% }) %>
+            </div>
+            <% } else { %>
+              <p>No games available.</p>
+              <% } %>
+
+                <div class="flex flex-col items-center justify-center text-center space-y-2">
+                  <!-- <p class="text-slate-400 text-sm m-8 p-0">
+                  See what people are playing!
+                </p> -->
+                  <form action="/search" method="post" class="m-0 p-0">
+                    <button
+                      class="bg-slate-700 px-6 py-3 my-2 rounded-xl text-white hover:bg-slate-500 transition hover:scale-[1.01] ease-in-out"
+                      onclick="window.location.href='/allGames'">
+                      View All Games
+                    </button>
+                  </form>
+                </div>
+
+
+        </div>
+      </div>
+
+      <!-- Tilt effect script -->
+      <script>
+        document.querySelectorAll('.tilt-card').forEach((card) => {
+          card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            const rotateX = -(y - centerY) / 20;
+            const rotateY = (x - centerX) / 20;
+
+            card.style.transform = `perspective(600px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.01)`;
+          });
+
+          card.addEventListener('mouseleave', () => {
+            card.style.transform = '';
           });
         });
-    </script>
-  </div>
+      </script>
+
+      <div class="text-center">
+        <input type="text" id="aiInput" placeholder="Enter a topic..."
+          class="text-white bg-gray-800 border border-gray-600 rounded px-4 py-2 w-72" />
+        <button onclick="askAIMagic()" class="text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded ml-2">
+          🪄 Magic Wand
+        </button>
+        <div id="aiOutput" class="text-white mt-4"></div>
+      </div>
+
+
+      <script>
+        const apiKey = 'f61c15c68f3246a3aeebcfa53cdef84f';
+        const wrapper = document.getElementById('kenburns-bg-wrapper');
+
+        fetch(
+          `https://api.rawg.io/api/games?key=${apiKey}&tags=multiplayer,co-op&page_size=10&page=3`
+        )
+          .then((res) => res.json())
+          .then((data) => {
+            data.results.forEach((game, index) => {
+              if (game.background_image) {
+                const bg = document.createElement('div');
+                bg.className = 'kenburns-image';
+                bg.style.backgroundImage = `url(${game.background_image})`;
+                wrapper.appendChild(bg);
+              }
+            });
+          });
+      </script>
+    </div>
 </body>
 
 </html>
