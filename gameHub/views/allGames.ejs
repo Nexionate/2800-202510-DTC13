@@ -18,13 +18,13 @@
       overflow: hidden;
       padding: 10px;
       text-align: center;
-      background-color: white;
-      color: black;
+      background-color: #0a0e1a;
+      color: white;
     }
 
     .game-card img {
-      width: 100%;
-      height: auto;
+      width: 222px;
+      height: 125px;
     }
 
     .pagination {
@@ -170,7 +170,7 @@
       <option value="name">A–Z</option>
     </select>
 
-    <button id="applyFilters" class="border-white border rounded-lg px-1">
+    <button id="applyFilters" class="border-white border hover:bg-gray-400 bg-[#0a0e1a] rounded-lg px-1">
       Apply Filters
     </button>
   </div>
@@ -181,13 +181,13 @@
     Results for "<%= filters.name %>"
   </h1>
 
-  <div class="games-list relative z-20" id="game-grid">
+  <div class="games-list text-white relative z-20" id="game-grid">
     <% if (games.length===0) { %>
       <p>No games found.</p>
       <% } else { %>
         <% games.forEach(game=> { %>
           <div
-            class="game-card tilt-card   bg-white rounded-xl shadow-md  transform hover:scale-101 active:scale-98 ease-in-out hover:scale-[1.01] text-center">
+            class="game-card tilt-card bg-[#0a0e1a] rounded-xl shadow-md border border-white overflow-hidden p-4 text-center  text-white transform hover:scale-101 active:scale-98 ease-in-out hover:scale-[1.01]">
             <h2 class="text-lg font-semibold mb-2">
               <%= game.name %>
             </h2>
@@ -233,9 +233,9 @@
 
 
     <div class="pagination relative z-20 ">
-      <button class="relative z-20 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition mt-8 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300" id="prevPage">Previous</button>
-      <span class="relative z-20 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition mt-8 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300" id="pageNum">Page 1</span>
-      <button class="relative z-20 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition mt-8 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300" id="nextPage">Next</button>
+      <button class="relative z-20 bg-[#0a0e1a] hover:bg-gray-400  text-white border border-white font-semibold py-2 px-4 rounded-lg shadow-md transition mt-8 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300" id="prevPage">Previous</button>
+      <span class="relative z-20 bg-[#0a0e1a] hover:bg-gray-400  text-white border border-white font-semibold py-2 px-4 rounded-lg shadow-md transition mt-8 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300" id="pageNum">Page 1</span>
+      <button class="relative z-20 bg-[#0a0e1a] hover:bg-gray-400 text-white border border-white font-semibold py-2 px-4 rounded-lg shadow-md transition mt-8 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300" id="nextPage">Next</button>
     </div>
   </body>
   <script>
