@@ -135,7 +135,29 @@
             const li = document.createElement('li');
             li.className = "bg-[#0a0e1a] border border-white text-white shadow rounded-lg p-4";
 
-            const playerListHTML = lobby.usersDetailed.map(player => `<li class="ml-4">👤 ${player.displayName} (${player.username})</li>`).join('');
+            const currentUsername = '<%= username %>'; // This must be passed into EJS
+
+const playerListHTML = lobby.usersDetailed.map(player => {
+  if (player.username === currentUsername) {
+    return `
+      <li class="ml-4">
+        👤 <input 
+          type="text" 
+          id="editTagInput" 
+          value="${player.displayName}" 
+          class="text-white px-1 rounded"
+        />
+        <button 
+          onclick="saveTag()" 
+          class="ml-2 px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+        >Edit Lobby Tag</button>
+      </li>
+    `;
+  } else {
+    return `<li class="ml-4">👤 ${player.displayName} (${player.username})</li>`;
+  }
+}).join('');
+
 
 
             li.innerHTML = `
@@ -197,6 +219,30 @@
           }
         });
       });
+
+      function saveTag() {
+  const newTag = document.getElementById("editTagInput").value;
+
+  fetch('/editDisplayName', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: `displayName=${encodeURIComponent(newTag)}`
+  })
+    .then(res => {
+      if (!res.ok) throw new Error('Failed to save');
+      return res.text();
+    })
+    .then(() => {
+      window.location.reload();
+    })
+    .catch(err => {
+      console.error('Error saving tag:', err);
+      alert('Failed to save tag.');
+    });
+}
+
   </script>
 </body>
 
