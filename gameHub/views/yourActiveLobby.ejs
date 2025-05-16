@@ -154,7 +154,9 @@ const playerListHTML = lobby.usersDetailed.map(player => {
       </li>
     `;
   } else {
-    return `<li class="ml-4">👤 ${player.displayName} (${player.username})</li>`;
+    return `<li class="ml-4">👤 ${player.displayName} (${player.username}) 
+  <span class="text-sm text-gray-400">– ${player.userRegion || 'Region unknown'}</span></li>`;
+
   }
 }).join('');
 

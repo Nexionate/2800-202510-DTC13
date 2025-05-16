@@ -571,7 +571,8 @@ async function main() {
         rawLobbies.map(async (lobby) => {
           const fullUsers = await userModel
             .find({ username: { $in: lobby.user } })
-            .select('username displayName');
+            .select("username displayName userRegion");
+        
       
           return {
             ...lobby.toObject(),
