@@ -9,13 +9,13 @@ const fetchLobbies = () => {
         list.innerHTML = "";
         
         if (data.length === 0) {
-          list.innerHTML = `<p class="text-center text-gray-500">No lobbies found.</p>`;
+          list.innerHTML = `<p class="text-center text-white">No lobbies found.</p>`;
           return;
         }
 
         data.forEach((lobby) => {
           const li = document.createElement("li");
-          li.className = "bg-white shadow rounded-lg p-4";
+          li.className = "bg-[#0a0e1a] border border-white text-white shadow rounded-lg p-4";
           li.innerHTML = `
             <h2 class="text-xl font-semibold">${lobby.lobbyName}</h2>
             <p><strong>Game:</strong> ${lobby.gameName}</p>
@@ -26,6 +26,7 @@ const fetchLobbies = () => {
           // this is untested
           const joinBtn = document.createElement("button");
           joinBtn.innerText = "Join";
+          joinBtn.className = "bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded transition hover:scale-[1.01] ease-in-out shadow:md";
           joinBtn.onclick = () => {
             fetch(`/joinLobby/${lobby.lobbyId}`, { method: "POST" })
               .then((res) => {
