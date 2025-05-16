@@ -565,7 +565,21 @@ async function main() {
 
       console.log("User's activeLobbiesIn:", activeLobbyIds); // 🔍 Log what's stored
 
-      const lobbies = await Lobby.find({ lobbyId: { $in: activeLobbyIds } });
+      const rawLobbies = await Lobby.find({ lobbyId: { $in: activeLobbyIds } });
+
+      const lobbies = await Promise.all(
+        rawLobbies.map(async (lobby) => {
+          const fullUsers = await userModel
+            .find({ username: { $in: lobby.user } })
+            .select('username displayName');
+      
+          return {
+            ...lobby.toObject(),
+            usersDetailed: fullUsers,
+          };
+        })
+      );
+      
 
       const validLobbyIds = lobbies.map((lobby) => lobby.lobbyId);
 

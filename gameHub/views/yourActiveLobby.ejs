@@ -135,7 +135,8 @@
             const li = document.createElement('li');
             li.className = "bg-[#0a0e1a] border border-white text-white shadow rounded-lg p-4";
 
-            const playerListHTML = lobby.user.map(player => `<li class="ml-4">👤 ${player}</li>`).join('');
+            const playerListHTML = lobby.usersDetailed.map(player => `<li class="ml-4">👤 ${player.displayName} (${player.username})</li>`).join('');
+
 
             li.innerHTML = `
               <h2 class="text-xl font-semibold">${lobby.lobbyName}</h2>
