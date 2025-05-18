@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
       rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+
+    <link
+      rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -229,25 +234,39 @@
         <hr class="border-t-sky-100" />
         <div class="px-8 py-4">
           <h2
-            class="flex justify-center items-center text-3xl text-white font-bold mb-4"
+            class="flex justify-center items-center text-3xl text-white font-bold mb-4 py-5"
           >
             Top 10 Popular Games
           </h2>
 
           <% if (games && games.length> 0) { %>
           <div
-            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 opacity-70"
+            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
           >
             <% games.forEach(game=> { %>
             <div
-              class="tilt-card p-4 rounded-xl text-center shadow-md bg-[#0a0e1a] bg-opacity-90 text-white transform hover:scale-101 active:scale-98 ease-in-out border border-white"
+              class="relative tilt-card p-4 rounded-xl text-center shadow-md text-white/90 transform hover:scale-101 active:scale-98 ease-in-out border border-white overflow-hidden"
               data-tilt-id="<%= game.id %>"
             >
+              <div class="absolute inset-0 bg-black/70 rounded-xl -z-10"></div>
               <h3 class="text-lg font-semibold mb-2"><%= game.name %></h3>
 
               <p class="text-sm mb-2 text-white/70">
                 Rating: <%= game.rating %>
               </p>
+              <!-- starts -->
+              <span>
+                <% const maxStars = 5; const fullStars =
+                Math.floor(game.rating); const halfStar = (game.rating % 1) >=
+                0.5; const emptyStars = maxStars - fullStars - (halfStar ? 1 :
+                0); for(let i = 0; i < fullStars; i++) { %>
+                <i class="fas fa-star" style="color: gold"></i>
+                <% } %> <% if (halfStar) { %>
+                <i class="fas fa-star-half-alt" style="color: gold"></i>
+                <% } %> <% for(let i = 0; i < emptyStars; i++) { %>
+                <i class="far fa-star" style="color: lightgray"></i>
+                <% } %>
+              </span>
 
               <% if (game.background_image) { %>
               <a href="/gameDescription/<%= game.id %>">
@@ -341,6 +360,31 @@
               }
             });
           });
+
+        // calcualte how many stars
+        function starRating(rating) {
+          const maxStars = 5;
+          const fullStars = Math.floor(rating);
+          const halfStar = rating % 1 >= 0.5;
+          const emptyStars = maxStars - fullStars - (halfStar ? 1 : 0);
+
+          let starHTML = '';
+
+          for (let i = 0; i < fullStars; i++) {
+            starHTML += '<i class="fas fa-star" style="color: gold;"></i>';
+          }
+
+          if (halfStar) {
+            starHTML +=
+              '<i class="fas fa-star-half-alt" style="color: gold;"></i>';
+          }
+
+          for (let i = 0; i < emptyStars; i++) {
+            starHTML += '<i class="far fa-star" style="color: lightgray;"></i>';
+          }
+
+          return starHTML;
+        }
       </script>
     </div>
   </body>
