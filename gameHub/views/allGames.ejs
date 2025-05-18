@@ -15,19 +15,30 @@
         margin: 20px;
       }
 
+      .game-card:hover {
+        background-color: #292c31;
+      }
       .game-card {
         border: 1px solid #ccc;
         border-radius: 6px;
         overflow: hidden;
         padding: 10px;
         text-align: center;
-        background-color: #0a0e1a;
+        background-color: #0a0e1aa3;
         color: white;
+        transition: background-color 0.5s ease;
       }
 
       .game-card img {
         width: 222px;
         height: 125px;
+      }
+
+      .game-card img.game-image {
+        width: 300px;
+        height: 175px;
+        object-fit: cover;
+        cursor: pointer;
       }
 
       .pagination {
@@ -114,13 +125,12 @@
       .kenburns-image:nth-child(10) {
         animation-delay: 27s;
       }
-      .game-card img.game-image {
-        width: 300px;
-        height: 175px;
-        object-fit: cover;
-        cursor: pointer;
-      }
     </style>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   </head>
 
@@ -250,7 +260,7 @@
       <p>No games found.</p>
       <% } else { %> <% games.forEach(game=> { %>
       <div
-        class="game-card tilt-card bg-[#0a0e1a] rounded-xl shadow-md border border-white overflow-hidden p-4 text-center text-white transform hover:scale-101 active:scale-98 ease-in-out hover:scale-[1.01]"
+        class="game-card tilt-card bg-black/80 rounded-xl shadow-md border border-white overflow-hidden p-4 text-center text-white transform ease-in-out"
       >
         <h2 class="text-lg font-semibold mb-2"><%= game.name %></h2>
         <% if (game.background_image) { %>
@@ -269,6 +279,16 @@
 
     <!-- Tilt + Dynamic Shadow Script -->
     <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              oswald: ['Oswald', 'sans-serif'], //oswald (title)
+              Fira: ['Fira Sans', 'sans-serif'], //oswald (title)
+            },
+          },
+        },
+      };
       document.querySelectorAll('.tilt-card').forEach((card) => {
         card.addEventListener('mousemove', (e) => {
           const rect = card.getBoundingClientRect();
