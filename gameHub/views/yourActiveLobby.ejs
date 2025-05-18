@@ -91,22 +91,38 @@
   <div class="fixed inset-0 bg-black/70 z-10 pointer-events-none"></div>
 
   <div class="relative z-20">
-    <!-- Navigation bar -->
-    <div class="flex flex-row justify-center pt-2 pb-2 text-md text-white space-x-5 bg-[#000000] relative z-10">
-      <button class="px-3" onclick="window.location.href='/home'">
-        Home
-      </button>
-      <button class="px-3" onclick="window.location.href='/profile'">
-        Profile
-      </button>
-      <button class="px-3" onclick="window.location.href='/help'">
-        Help
-      </button>
-      <form class="px-3" action="/logout">
-        <input type="submit" value="Logout" />
-      </form>
+    <div class="relative z-20">
+      <!-- Navigation bar -->
+      <div
+        class="flex flex-row justify-center h-10 text-md text-white space-x-5 bg-[#000000] relative z-10"
+      >
+        <button
+          class="px-3 h-full hover:bg-gray-400 transition duration-500 ease-in-out"
+          onclick="window.location.href='/home'"
+        >
+          Home
+        </button>
+        <button
+          class="px-3 h-full hover:bg-gray-400 transition duration-500 ease-in-out"
+          onclick="window.location.href='/profile'"
+        >
+          Profile
+        </button>
+        <button
+          class="px-3 h-full hover:bg-gray-400 transition duration-500 ease-in-out"
+          onclick="window.location.href='/help'"
+        >
+          Help
+        </button>
+        <button
+          class="px-3 h-full hover:bg-gray-400 transition duration-500 ease-in-out"
+        >
+          <form class="px-3" action="/logout">
+            <input type="submit" value="Logout" />
+          </form>
+        </button>
+      </div>
     </div>
-  </div>
 
   <div class="relative z-10 p-6">
     <h1 class="text-3xl text-white font-bold text-center mb-6">Your Active Lobbies</h1>

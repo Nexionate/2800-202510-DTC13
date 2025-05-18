@@ -2,8 +2,6 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
@@ -17,19 +15,30 @@
         margin: 20px;
       }
 
+      .game-card:hover {
+        background-color: #292c31;
+      }
       .game-card {
         border: 1px solid #ccc;
         border-radius: 6px;
         overflow: hidden;
         padding: 10px;
         text-align: center;
-        background-color: #0a0e1a;
+        background-color: #0a0e1aa3;
         color: white;
+        transition: background-color 0.2s ease;
       }
 
       .game-card img {
         width: 222px;
         height: 125px;
+      }
+
+      .game-card img.game-image {
+        width: 300px;
+        height: 175px;
+        object-fit: cover;
+        cursor: pointer;
       }
 
       .pagination {
@@ -38,12 +47,9 @@
       }
 
       .pagination button {
-        padding: 10px 20px;
-        margin: 0 10px;
-      }
-
-      .sidebar {
-        text-align: center;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        width: 20%;
       }
 
       @keyframes kenburns {
@@ -119,17 +125,16 @@
       .kenburns-image:nth-child(10) {
         animation-delay: 27s;
       }
-      .game-card img.game-image {
-        width: 300px;
-        height: 175px;
-        object-fit: cover;
-        cursor: pointer;
-      }
     </style>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   </head>
 
-  <body class="relative font-sans bg-black text-white">
+  <body class="font-sans bg-black text-white">
     <!-- Ken Burns Background -->
     <div
       id="kenburns-bg-wrapper"
@@ -141,67 +146,107 @@
     <div class="relative z-20">
       <!-- Navigation bar -->
       <div
-        class="flex flex-row justify-center pt-2 pb-2 text-md text-white space-x-5 bg-[#000000] relative z-10"
+        class="flex flex-row justify-center h-10 text-md text-white space-x-5 bg-[#000000] relative z-10"
       >
-        <button class="px-3" onclick="window.location.href='/home'">
+        <button
+          class="px-3 h-full hover:bg-gray-400 transition duration-500 ease-in-out"
+          onclick="window.location.href='/home'"
+        >
           Home
         </button>
-        <button class="px-3" onclick="window.location.href='/profile'">
+        <button
+          class="px-3 h-full hover:bg-gray-400 transition duration-500 ease-in-out"
+          onclick="window.location.href='/profile'"
+        >
           Profile
         </button>
-        <button class="px-3" onclick="window.location.href='/help'">
+        <button
+          class="px-3 h-full hover:bg-gray-400 transition duration-500 ease-in-out"
+          onclick="window.location.href='/help'"
+        >
           Help
         </button>
-        <form class="px-3" action="/logout">
-          <input type="submit" value="Logout" />
-        </form>
+        <button
+          class="px-3 h-full hover:bg-gray-400 transition duration-500 ease-in-out"
+        >
+          <form class="px-3" action="/logout">
+            <input type="submit" value="Logout" />
+          </form>
+        </button>
       </div>
     </div>
 
     <h1
-      class="relative z-20 text-4xl flex flex-row gap-4 text-white justify-center mx-auto flex-wrap font-bold py-4"
+      class="relative z-20 text-4xl font-bold flex flex-row gap-4 text-white justify-center mx-auto flex-wrap py-4"
     >
       All Games
     </h1>
 
     <div
       id="sidebar"
-      class="relative z-20 px-4 mx-4 py-3 border border-white rounded-lg"
+      class="relative z-20 px-4 mx-4 bg-black/30 border border-white rounded-lg flex items-center justify-end flex-col md:flex-row gap-4 p-4"
     >
-      <form action="/search" method="post">
-        <label for="search" class="text-2xl">Search: </label>
-        <input
-          type="text"
-          name="search"
-          placeholder="Search..."
-          class="border border-black w-1/2 rounded-lg bg-white px-4 py-2 text-black"
-        />
-      </form>
-      <h3 class="underline py-3">Filter Games</h3>
-      <div class="flex flex-col space-y-4 md:flex-row space-x-4 md:space-y-0">
-        <div>
-          <label for="genre">Genre:</label>
-          <select id="genre" class="border border-white text-black bg-white">
-            <option value="">All</option>
+      <div id="search-seaction" class="w-full md:w-[40%]">
+        <form action="/search" method="post">
+          <svg
+            class="absolute left-8 top-[1.4rem] md:left-6 md:top-1/2 md:-translate-y-[10px] w-5 h-5 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"
+            ></path>
+          </svg>
+          <input
+            type="text"
+            name="search"
+            placeholder="Search for games"
+            id="searc-bar"
+            class="border border-black rounded-full bg-white px-4 py-1 w-full pl-10 text-black focus:ring-3"
+          />
+        </form>
+      </div>
+      <div
+        id="filter"
+        class="w-full flex flex-col items-center justify-center md:flex-row md:w-[70%] gap-5"
+      >
+        <div class="flex flex-row gap-2">
+          <div class="w-auto flex gap-2">
+            <label for="genre" class="text-xl">Genre:</label>
+            <select
+              id="genre"
+              class="h-7 border border-white rounded-full text-center text-black bg-white"
+            >
+              <option value="">All</option>
             </select>
-        </div>
-        
-        <div>
-          <label for="ordering">Sort By:</label>
-          <select id="ordering" class="border border-white text-black bg-white ">
-            <option value="">Default</option>
-            <option value="-rating">Top Rated</option>
-            <option value="-released">Newest</option>
-            <option value="name">A–Z</option>
+          </div>
+
+          <div class="w-auto flex min-w-[170px] gap-2">
+            <label for="ordering" class="text-xl">Sort By:</label>
+            <select
+              id="ordering"
+              class="h-7 border border-white rounded-full text-center text-black bg-white"
+            >
+              <option value="">Default</option>
+              <option value="-rating">Top Rated</option>
+              <option value="-released">Newest</option>
+              <option value="name">A–Z</option>
             </select>
+          </div>
         </div>
-        <button id="applyFilters" class="border-white border hover:bg-gray-400 bg-[#0a0e1a] rounded-lg px-1 ">
-          Apply Filters
+
+        <button
+          id="applyFilters"
+          class="border border-white bg-[#0a0e1a] hover:bg-gray-400 text-white rounded-lg py-1 px-2 w-[80%] transition-colors duration-300 ease-in-out"
+        >
+          Apply
         </button>
       </div>
-      
-
- 
     </div>
 
     <h1
@@ -215,7 +260,7 @@
       <p>No games found.</p>
       <% } else { %> <% games.forEach(game=> { %>
       <div
-        class="game-card tilt-card bg-[#0a0e1a] rounded-xl shadow-md border border-white overflow-hidden p-4 text-center text-white transform hover:scale-101 active:scale-98 ease-in-out hover:scale-[1.01]"
+        class="game-card tilt-card bg-black/80 rounded-xl shadow-md border border-white overflow-hidden p-4 text-center text-white transform ease-in-out"
       >
         <h2 class="text-lg font-semibold mb-2"><%= game.name %></h2>
         <% if (game.background_image) { %>
@@ -234,6 +279,16 @@
 
     <!-- Tilt + Dynamic Shadow Script -->
     <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              oswald: ['Oswald', 'sans-serif'], //oswald (title)
+              Fira: ['Fira Sans', 'sans-serif'], //oswald (title)
+            },
+          },
+        },
+      };
       document.querySelectorAll('.tilt-card').forEach((card) => {
         card.addEventListener('mousemove', (e) => {
           const rect = card.getBoundingClientRect();
@@ -261,20 +316,20 @@
       });
     </script>
 
-    <div class="pagination relative z-20">
+    <div
+      class="pagination relative z-20 text-white border-white font-semibold mx-auto"
+    >
       <button
-        class="relative z-20 bg-[#0a0e1a] hover:bg-gray-400 text-white border border-white font-semibold py-2 px-4 rounded-lg shadow-md transition mt-8 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300"
+        class="relative z-20 bg-[#0a0e1a] hover:bg-gray-400 border rounded-l-full border-r-0 shadow-md transition transform focus:outline-none focus:ring-2 focus:ring-blue-300"
         id="prevPage"
       >
-        Previous
-      </button>
-      <span
-        class="relative z-20 bg-[#0a0e1a] hover:bg-gray-400 text-white border border-white font-semibold py-2 px-4 rounded-lg shadow-md transition mt-8 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300"
+        Prev</button
+      ><span
+        class="relative z-20 py-[6.3px] pb-[6.5px] bg-[#0a0e1a] shadow-md transition duration-500 ease-in-ou mt-8 transform border border-y-white border-x-0 px-4"
         id="pageNum"
         >Page 1</span
-      >
-      <button
-        class="relative z-20 bg-[#0a0e1a] hover:bg-gray-400 text-white border border-white font-semibold py-2 px-4 rounded-lg shadow-md transition mt-8 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300"
+      ><button
+        class="relative z-20 bg-[#0a0e1a] hover:bg-gray-400 transition duration-500 ease-in-ou border rounded-r-full border-l-0 shadow-md mt-8 transform focus:outline-none focus:ring-2 focus:ring-blue-300"
         id="nextPage"
       >
         Next
@@ -319,7 +374,6 @@
         if (genre) url += `&genres=${genre}`;
         if (ordering) url += `&ordering=${ordering}`;
         if (searchName && searchName != 'All Games') url += `&search=${searchName}`;
-        console.log(url);
         const response = await fetch(url);
         const data = await response.json();
         renderGames(data.results);

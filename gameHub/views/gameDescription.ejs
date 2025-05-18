@@ -1,56 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Game Description</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Game Description</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      const gameId = '<%= gameId %>';
+      const apiKey = 'f61c15c68f3246a3aeebcfa53cdef84f';
 
-  <script>
-    const gameId = "<%= gameId %>";
-    const apiKey = 'f61c15c68f3246a3aeebcfa53cdef84f';
+      fetch(`https://api.rawg.io/api/games/${gameId}?key=${apiKey}`)
+        .then((response) => {
+          if (!response.ok)
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          return response.json();
+        })
+        .then((data) => {
+          const descriptionHTML = data.description || '';
+          const cleanedDescription = descriptionHTML.split('Español')[0];
+          document.getElementById('game-title').textContent = data.name;
+          document.getElementById('game-image').src = data.background_image;
+          document.getElementById('game-description').innerHTML =
+            cleanedDescription || 'No description available.';
 
-    fetch(`https://api.rawg.io/api/games/${gameId}?key=${apiKey}`)
-      .then(response => {
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-        return response.json();
-      })
-      .then(data => {
-        const descriptionHTML = data.description || '';
-        const cleanedDescription = descriptionHTML.split('Español')[0];
-        document.getElementById('game-title').textContent = data.name;
-        document.getElementById('game-image').src = data.background_image;
-        document.getElementById('game-description').innerHTML = cleanedDescription || 'No description available.';
+          // ✅ Set background image dynamically
+          document.getElementById(
+            'page-body'
+          ).style.backgroundImage = `url('${data.background_image}')`;
+        })
+        .catch((error) => {
+          console.error('Error fetching game data:', error);
+        });
+    </script>
+  </head>
 
-        // ✅ Set background image dynamically
-        document.getElementById('page-body').style.backgroundImage = `url('${data.background_image}')`;
-      })
-      .catch(error => {
-        console.error('Error fetching game data:', error);
-      });
-  </script>
-</head>
+  <!-- ✅ Fixed body with ID and background classes -->
 
-<!-- ✅ Fixed body with ID and background classes -->
-
-<body>
-  
-  <div class="relative z-20 ">
-    <!-- Navigation bar -->
-    <div class="flex flex-row justify-center pt-2 pb-2 text-md text-white space-x-5 bg-[#000000] relative z-10">
-      <button class="px-3" onclick="window.location.href='/home'">
-        Home
-      </button>
-      <button class="px-3" onclick="window.location.href='/profile'">
-        Profile
-      </button>
-      <button class="px-3" onclick="window.location.href='/help'">
-        Help
-      </button>
-      <form class="px-3" action="/logout">
-        <input type="submit" value="Logout" />
-      </form>
+  <body>
+    <div class="relative z-20">
+      <!-- Navigation bar -->
+      <div
+        class="flex flex-row justify-center h-10 text-md text-white space-x-5 bg-[#000000] relative z-10"
+      >
+        <button
+          class="px-3 h-full hover:bg-gray-400 transition duration-500 ease-in-out"
+          onclick="window.location.href='/home'"
+        >
+          Home
+        </button>
+        <button
+          class="px-3 h-full hover:bg-gray-400 transition duration-500 ease-in-out"
+          onclick="window.location.href='/profile'"
+        >
+          Profile
+        </button>
+        <button
+          class="px-3 h-full hover:bg-gray-400 transition duration-500 ease-in-out"
+          onclick="window.location.href='/help'"
+        >
+          Help
+        </button>
+        <button
+          class="px-3 h-full hover:bg-gray-400 transition duration-500 ease-in-out"
+        >
+          <form class="px-3" action="/logout">
+            <input type="submit" value="Logout" />
+          </form>
+        </button>
+      </div>
     </div>
   </div>
 
