@@ -36,12 +36,9 @@
       }
 
       .pagination button {
-        padding: 10px 20px;
-        margin: 0 10px;
-      }
-
-      .sidebar {
-        text-align: center;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        width: 20%;
       }
 
       @keyframes kenburns {
@@ -127,7 +124,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   </head>
 
-  <body class="relative font-sans bg-black text-white">
+  <body class="font-sans bg-black text-white">
     <!-- Ken Burns Background -->
     <div
       id="kenburns-bg-wrapper"
@@ -164,37 +161,57 @@
 
     <div
       id="sidebar"
-      class="relative z-20 px-4 mx-4 py-3 border border-white rounded-lg"
+      class="relative z-20 px-4 mx-4 border border-white rounded-lg flex items-center justify-end gap-4 p-4"
     >
-      <form action="/search" method="post">
-        <label for="search" class="text-2xl">Search: </label>
-        <input
-          type="text"
-          name="search"
-          placeholder="Search..."
-          class="border border-black w-1/2 rounded-lg bg-white px-4 py-2 text-black"
-        />
-      </form>
-      <h3 class="underline py-3">Filter Games</h3>
-      <label for="genre">Genre:</label>
-      <select id="genre" class="border border-white text-black bg-white">
-        <option value="">All</option>
-      </select>
-
-      <label for="ordering">Sort By:</label>
-      <select id="ordering" class="border border-white text-black bg-white">
-        <option value="">Default</option>
-        <option value="-rating">Top Rated</option>
-        <option value="-released">Newest</option>
-        <option value="name">A–Z</option>
-      </select>
-
-      <button
-        id="applyFilters"
-        class="border-white border hover:bg-gray-400 bg-[#0a0e1a] rounded-lg px-1"
+      <div id="searh-seaction" class="md:w-[30%] flex">
+        <form action="/search" method="post">
+          <svg
+            class="absolute left-6 top-1/2 -translate-y-[10px] w-5 h-5 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"
+            ></path>
+          </svg>
+          <input
+            type="text"
+            name="search"
+            placeholder="   Search for games"
+            id="searc-bar"
+            class="border border-black w- rounded-lg bg-white px-4 py-1 pl-10 text-black focus:ring-3 focus:ring-blue-500"
+          />
+        </form>
+      </div>
+      <div
+        id="filter"
+        class="w-full md:w-[70%] flex flex-col md:flex-row gap-4"
       >
-        Apply Filters
-      </button>
+        <label for="genre" class="text-xl">Genre:</label>
+        <select id="genre" class="border border-white text-black bg-white">
+          <option value="">All</option>
+        </select>
+
+        <label for="ordering" class="text-xl">Sort By:</label>
+        <select id="ordering" class="border border-white text-black bg-white">
+          <option value="">Default</option>
+          <option value="-rating">Top Rated</option>
+          <option value="-released">Newest</option>
+          <option value="name">A–Z</option>
+        </select>
+
+        <button
+          id="applyFilters"
+          class="border-white border hover:bg-gray-400 bg-[#0a0e1a] rounded-lg p-1"
+        >
+          Apply Filters
+        </button>
+      </div>
     </div>
 
     <h1
@@ -254,20 +271,20 @@
       });
     </script>
 
-    <div class="pagination relative z-20">
+    <div
+      class="pagination relative z-20 text-white border-white font-semibold mx-auto"
+    >
       <button
-        class="relative z-20 bg-[#0a0e1a] hover:bg-gray-400 text-white border border-white font-semibold py-2 px-4 rounded-lg shadow-md transition mt-8 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300"
+        class="relative z-20 bg-[#0a0e1a] hover:bg-gray-400 border rounded-l-full border-r-0 shadow-md transition transform focus:outline-none focus:ring-2 focus:ring-blue-300"
         id="prevPage"
       >
-        Previous
-      </button>
-      <span
-        class="relative z-20 bg-[#0a0e1a] hover:bg-gray-400 text-white border border-white font-semibold py-2 px-4 rounded-lg shadow-md transition mt-8 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300"
+        Prev</button
+      ><span
+        class="relative z-20 py-[6.3px] pb-[6.5px] bg-[#0a0e1a] shadow-md transition mt-8 transform border border-y-white border-x-0 px-4"
         id="pageNum"
         >Page 1</span
-      >
-      <button
-        class="relative z-20 bg-[#0a0e1a] hover:bg-gray-400 text-white border border-white font-semibold py-2 px-4 rounded-lg shadow-md transition mt-8 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300"
+      ><button
+        class="relative z-20 bg-[#0a0e1a] hover:bg-gray-400 border rounded-r-full border-l-0 shadow-md transition mt-8 transform focus:outline-none focus:ring-2 focus:ring-blue-300"
         id="nextPage"
       >
         Next
@@ -312,7 +329,6 @@
         if (genre) url += `&genres=${genre}`;
         if (ordering) url += `&ordering=${ordering}`;
         if (searchName && searchName != 'All Games') url += `&search=${searchName}`;
-        console.log(url);
         const response = await fetch(url);
         const data = await response.json();
         renderGames(data.results);

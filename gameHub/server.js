@@ -31,7 +31,9 @@ const userModel = new mongoose.model('users', userSchema);
 main().catch((err) => console.log(err));
 
 async function main() {
-  await mongoose.connect('mongodb+srv://timothyakim21:wLO450pzaWlXOwya@cluster0.9ighx2c.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0');
+  await mongoose.connect(
+    'mongodb+srv://timothyakim21:wLO450pzaWlXOwya@cluster0.9ighx2c.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+  );
   app.use(express.static(path.join(__dirname, 'public')));
   app.use(express.json());
 
@@ -594,7 +596,7 @@ async function main() {
   app.post('/search', async (req, res) => {
     try {
       let searchName = req.body.search?.trim();
-      let apiUrl = `https://api.rawg.io/api/games?key=${apiKey}&page_size=18&tags=co-op`;
+      let apiUrl = `https://api.rawg.io/api/games?key=${apiKey}&page_size=20&tags=co-op`;
 
       // if seach exists
       if (searchName) {
