@@ -154,19 +154,19 @@
     </div>
 
     <h1
-      class="relative z-20 text-4xl flex flex-row gap-4 text-white justify-center mx-auto flex-wrap font-bold py-4"
+      class="relative z-20 text-4xl font-bold flex flex-row gap-4 text-white justify-center mx-auto flex-wrap font-bold py-4"
     >
       All Games
     </h1>
 
     <div
       id="sidebar"
-      class="relative z-20 px-4 mx-4 border border-white rounded-lg flex items-center justify-end gap-4 p-4"
+      class="relative z-20 px-4 mx-4 bg-black/30 border border-white rounded-lg flex items-center justify-end flex-col md:flex-row gap-4 p-4"
     >
-      <div id="searh-seaction" class="md:w-[30%] flex">
+      <div id="search-seaction" class="w-full md:w-[40%]">
         <form action="/search" method="post">
           <svg
-            class="absolute left-6 top-1/2 -translate-y-[10px] w-5 h-5 text-gray-400"
+            class="absolute left-8 top-[1.4rem] md:left-6 md:top-1/2 md:-translate-y-[10px] w-5 h-5 text-gray-400"
             fill="none"
             stroke="currentColor"
             stroke-width="2"
@@ -182,34 +182,46 @@
           <input
             type="text"
             name="search"
-            placeholder="   Search for games"
+            placeholder="Search for games"
             id="searc-bar"
-            class="border border-black w- rounded-lg bg-white px-4 py-1 pl-10 text-black focus:ring-3 focus:ring-blue-500"
+            class="border border-black rounded-full bg-white px-4 py-1 w-full pl-10 text-black focus:ring-3 focus:ring-blue-500"
           />
         </form>
       </div>
       <div
         id="filter"
-        class="w-full md:w-[70%] flex flex-col md:flex-row gap-4"
+        class="w-full flex flex-col items-center justify-center md:flex-row md:w-[70%] gap-5"
       >
-        <label for="genre" class="text-xl">Genre:</label>
-        <select id="genre" class="border border-white text-black bg-white">
-          <option value="">All</option>
-        </select>
+        <div class="flex flex-row gap-2">
+          <div class="w-auto flex gap-2">
+            <label for="genre" class="text-xl">Genre:</label>
+            <select
+              id="genre"
+              class="h-7 border border-white rounded-full text-center text-black bg-white"
+            >
+              <option value="">All</option>
+            </select>
+          </div>
 
-        <label for="ordering" class="text-xl">Sort By:</label>
-        <select id="ordering" class="border border-white text-black bg-white">
-          <option value="">Default</option>
-          <option value="-rating">Top Rated</option>
-          <option value="-released">Newest</option>
-          <option value="name">A–Z</option>
-        </select>
+          <div class="w-auto flex min-w-[170px] gap-2">
+            <label for="ordering" class="text-xl">Sort By:</label>
+            <select
+              id="ordering"
+              class="h-7 border border-white rounded-full text-center text-black bg-white"
+            >
+              <option value="">Default</option>
+              <option value="-rating">Top Rated</option>
+              <option value="-released">Newest</option>
+              <option value="name">A–Z</option>
+            </select>
+          </div>
+        </div>
 
         <button
           id="applyFilters"
-          class="border-white border hover:bg-gray-400 bg-[#0a0e1a] rounded-lg p-1"
+          class="border-white border hover:bg-gray-400 bg-[#0a0e1a] rounded-lg py-1 px-2 w-[80%]"
         >
-          Apply Filters
+          Apply
         </button>
       </div>
     </div>
