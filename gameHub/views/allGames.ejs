@@ -178,25 +178,30 @@
         />
       </form>
       <h3 class="underline py-3">Filter Games</h3>
-      <label for="genre">Genre:</label>
-      <select id="genre" class="border border-white text-black bg-white">
-        <option value="">All</option>
-      </select>
+      <div class="flex flex-col space-y-4 md:flex-row space-x-4 md:space-y-0">
+        <div>
+          <label for="genre">Genre:</label>
+          <select id="genre" class="border border-white text-black bg-white">
+            <option value="">All</option>
+            </select>
+        </div>
+        
+        <div>
+          <label for="ordering">Sort By:</label>
+          <select id="ordering" class="border border-white text-black bg-white ">
+            <option value="">Default</option>
+            <option value="-rating">Top Rated</option>
+            <option value="-released">Newest</option>
+            <option value="name">A–Z</option>
+            </select>
+        </div>
+        <button id="applyFilters" class="border-white border hover:bg-gray-400 bg-[#0a0e1a] rounded-lg px-1 ">
+          Apply Filters
+        </button>
+      </div>
+      
 
-      <label for="ordering">Sort By:</label>
-      <select id="ordering" class="border border-white text-black bg-white">
-        <option value="">Default</option>
-        <option value="-rating">Top Rated</option>
-        <option value="-released">Newest</option>
-        <option value="name">A–Z</option>
-      </select>
-
-      <button
-        id="applyFilters"
-        class="border-white border hover:bg-gray-400 bg-[#0a0e1a] rounded-lg px-1"
-      >
-        Apply Filters
-      </button>
+ 
     </div>
 
     <h1
