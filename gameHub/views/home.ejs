@@ -159,13 +159,33 @@
         GameHub
       </h1>
 
-      <form action="/search" method="post" class="flex justify-center">
-        <input
-          type="text"
-          name="search"
-          placeholder="Search..."
-          class="border border-black w-1/3 rounded-lg bg-white px-4 py-2"
-        />
+      <form action="/search" method="post">
+        <!-- Use a wrapper div to contain the input and icon -->
+        <div class="relative w-[90%] md:w-[40%] mx-auto">
+          <!-- SVG Icon inside input container -->
+          <svg
+            class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"
+            />
+          </svg>
+
+          <!-- Input field -->
+          <input
+            type="text"
+            name="search"
+            placeholder="Search..."
+            class="w-full border border-black rounded-full bg-white py-2 pl-10 pr-4"
+          />
+        </div>
       </form>
 
       <!-- Button Container Matching Card Width -->
