@@ -154,31 +154,36 @@
         GameHub
       </h1>
 
-      <form action="/search" method="post" class="flex justify-center relative">
-        <svg
-          class="absolute left-10 top-[0] md:left-55 md:top-1/2 md:-translate-y-[10px] w-5 h-5 text-gray-400 z-10"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"
-          ></path>
-        </svg>
-        <input
-          type="text"
-          name="search"
-          placeholder="Search..."
-          class="border border-black w-[40%] pl-10 rounded-full bg-white px-4 py-2"
-        />
-      </form>
+      <form action="/search" method="post">
+        <!-- Use a wrapper div to contain the input and icon -->
+        <div class="relative w-[90%] md:w-[40%] mx-auto">
+          <!-- SVG Icon inside input container -->
+          <svg
+            class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"
+            />
+          </svg>
 
+          <!-- Input field -->
+          <input
+            type="text"
+            name="search"
+            placeholder="Search..."
+            class="w-full border border-black rounded-full bg-white py-2 pl-10 pr-4"
+          />
+        </div>
+      </form>
       <!-- Button Container Matching Card Width -->
-      <div class="relative z-20 mx-auto px-8 max-w-4xl">
+      <div class="relative z-20 mx-auto px-8 max-w-4xl py-3">
         <div class="flex space-x-4">
           <button
             class="flex-1 text-lg bg-[#0a0e1a] px-3 py-4 rounded-xl border border-white text-white hover:bg-gray-400 transition hover:scale-[1.01] ease-in-out"
@@ -221,9 +226,10 @@
       <div
         class="relative z-20 p-2 gap-4 justify-center mx-auto flex-wrap rounded-xl space-y-1 bg-transparent shadow-md"
       >
+        <hr class="border-t-sky-100" />
         <div class="px-8 py-4">
           <h2
-            class="flex justify-center items-center text-2xl text-white font-bold mb-4"
+            class="flex justify-center items-center text-3xl text-white font-bold mb-4"
           >
             Top 10 Popular Games
           </h2>
@@ -306,13 +312,13 @@
           type="text"
           id="aiInput"
           placeholder="Enter a topic..."
-          class="text-black bg-white border border-black rounded px-4 py-2 w-72"
+          class="text-black bg-white border border-black rounded-full px-4 py-2 w-72"
         />
         <button
           onclick="askAIMagic()"
           class="text-white border border-white bg-[#0a0e1a] hover:bg-indigo-700 px-4 py-2 rounded-xl"
         >
-          🪄 Magic Wand
+          🧙 Magic Wand
         </button>
         <div id="aiOutput" class="text-white mt-4"></div>
       </div>
