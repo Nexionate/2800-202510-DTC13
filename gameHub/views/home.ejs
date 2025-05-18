@@ -119,20 +119,33 @@
     <div class="relative z-20">
       <!-- Navigation bar -->
       <div
-        class="flex flex-row justify-center pt-2 pb-2 text-md text-white space-x-5 bg-[#000000] relative z-10"
+        class="flex flex-row justify-center h-10 text-md text-white space-x-5 bg-[#000000] relative z-10"
       >
-        <button class="px-3" onclick="window.location.href='/home'">
+        <button
+          class="px-3 h-full hover:bg-gray-400 transition duration-500 ease-in-out"
+          onclick="window.location.href='/home'"
+        >
           Home
         </button>
-        <button class="px-3" onclick="window.location.href='/profile'">
+        <button
+          class="px-3 h-full hover:bg-gray-400 transition duration-500 ease-in-out"
+          onclick="window.location.href='/profile'"
+        >
           Profile
         </button>
-        <button class="px-3" onclick="window.location.href='/help'">
+        <button
+          class="px-3 h-full hover:bg-gray-400 transition duration-500 ease-in-out"
+          onclick="window.location.href='/help'"
+        >
           Help
         </button>
-        <form class="px-3" action="/logout">
-          <input type="submit" value="Logout" />
-        </form>
+        <button
+          class="px-3 h-full hover:bg-gray-400 transition duration-500 ease-in-out"
+        >
+          <form class="px-3" action="/logout">
+            <input type="submit" value="Logout" />
+          </form>
+        </button>
       </div>
     </div>
 
