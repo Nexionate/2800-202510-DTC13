@@ -443,19 +443,36 @@ async function main() {
     }
   });
 
-  app.get('/lobbies', async (req, res) => {
-    try {
-      const username = req.session?.user?.username;
-      if (!username) return res.status(401).send('User not authenticated');
+app.get('/lobbies', async (req, res) => {
+  try {
+    const username = req.session?.user?.username;
+    if (!username) return res.status(401).send('User not authenticated');
 
-      const lobbies = await Lobby.find({ user: { $ne: username } });
+    const search = req.query.search?.toLowerCase();
+    const tags = req.query.tags?.split(",").map(tag => tag.toLowerCase());
 
-      res.json(lobbies);
-    } catch (err) {
-      console.error('Error fetching lobbies:', err.message);
-      res.status(500).send('Internal server error');
+    const query = { user: { $ne: username } };
+
+    if (search) {
+      query.$or = [
+        { lobbyName: { $regex: search, $options: "i" } },
+        { gameName: { $regex: search, $options: "i" } },
+        { lobbyId: { $regex: search, $options: "i" } },
+      ];
     }
-  });
+
+    if (tags && tags.length > 0) {
+      query.tags = { $in: tags };
+    }
+
+    const lobbies = await Lobby.find(query);
+    res.json(lobbies);
+  } catch (err) {
+    console.error("Error fetching lobbies:", err.message);
+    res.status(500).send("Internal server error");
+  }
+});
+
 
   app.post('/joinLobby/:id', async (req, res) => {
     try {
