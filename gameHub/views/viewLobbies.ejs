@@ -139,6 +139,37 @@
         </button>
       </div>
 
+<div class="flex flex-row justify-center text-center mb-6">
+  <input
+    id="filter-input"
+    type="text"
+    placeholder="Search by game name or lobby ID"
+    class="bg-[#0a0e1a] px-3 py-2 rounded border border-gray-400 w-64 text-white"
+  />
+
+  <select id="tag-filter" multiple class="bg-[#0a0e1a] px-3 py-2 rounded border border-gray-400 w-64 text-white">
+    <option value="coop">Co-op</option>
+    <option value="competitive">Competitive</option>
+    <option value="casual">Casual</option>
+    <option value="ranked">Ranked</option>
+    <option value="custom">Custom</option>
+  </select>
+
+  <button
+    onclick="applyCombinedFilter()"
+    class="ml-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-800 transition"
+  >
+    Apply Filter
+  </button>
+
+  <button
+    onclick="fetchLobbies()"
+    class="ml-2 bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-800 transition"
+  >
+    Reset
+  </button>
+</div>
+
       <ul id="lobby-list" class="space-y-4 max-w-2xl mx-auto">
         <!-- Lobbies will be listed here -->
       </ul>
