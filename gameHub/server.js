@@ -149,10 +149,11 @@ async function main() {
       const topGames = data.results;
 
       // ✅ Render home with games and username
-      res.render('home.ejs', {
-        username,
-        games: topGames,
-      });
+      // res.render('home.ejs', {
+      //   username,
+      //   games: topGames,
+      // });
+      res.redirect('/login');
     } catch (error) {
       console.error('Error fetching games after register:', error);
       res.status(500).send('Failed to fetch games');
