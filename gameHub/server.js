@@ -658,4 +658,31 @@ app.get('/lobbies', async (req, res) => {
       res.status(500).send('Error fetching games');
     }
   });
+  app.get('/search', async (req, res) => {
+    try{
+      const searchName = '';
+      let apiUrl = `https://api.rawg.io/api/games?key=${apiKey}&page_size=20&tags=co-op`;
+
+      const response = await fetch(apiUrl);
+
+      if (!response.ok) throw new Error('Failed to fetch from RAWG API');
+
+      const data = await response.json();
+      const games = data.results;
+
+      // Make sure session has user info. This information is passed to allGames.ejs
+      const user = req.session.user || {};
+      
+      res.render('allGames.ejs', {
+          username: req.session.user.username,
+          role: req.session.user.role,
+          games,
+          filters: { name: searchName },
+          searchName,
+      });
+    } catch (error) {
+      console.error('Fetch error:', error);
+      res.status(500).send('Error fetching games');
+    }
+  });
 }
