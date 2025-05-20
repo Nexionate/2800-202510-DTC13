@@ -20,6 +20,8 @@
         background-color: #292c31;
       }
       .game-card {
+        display: flex;
+        justify-content: center;
         border: 1px solid #ccc;
         border-radius: 6px;
         overflow: hidden;
@@ -216,7 +218,7 @@
         id="filter"
         class="w-full flex flex-col items-center justify-center md:flex-row md:w-[70%] gap-5"
       >
-        <div class="flex flex-row gap-2">
+        <div class="flex flex-col md:flex-row gap-2">
           <div class="w-auto flex gap-2">
             <label for="genre" class="text-xl">Genre:</label>
             <select
@@ -227,11 +229,13 @@
             </select>
           </div>
 
-          <div class="w-auto flex min-w-[170px] gap-2">
-            <label for="ordering" class="text-xl">Sort By:</label>
+          <div class=" flex flex-row min-w-[170px] gap-2  ">
+            <div class="min-w-[70px]">
+              <label for="ordering" class="text-xl">Sort By:</label>
+            </div>
             <select
               id="ordering"
-              class="h-7 border border-white rounded-full text-center text-black bg-white"
+              class="h-7 border border-white rounded-full text-center text-black bg-white w-full md:pr-0"
             >
               <option value="">Default</option>
               <option value="-rating">Top Rated</option>
@@ -414,9 +418,11 @@
         div.innerHTML = `
           <a href="/gameDescription/${game.id}">
               <img class="game-image" src="${game.background_image}" alt="${game.name}"/>
-              <h2><b>${game.name}</b></h2>
-              <h4>Rating ${game.rating}<h4>
-              <span>${starRating(game.rating)}</span>
+              <div id="rating">
+                <h2><b>${game.name}</b></h2>
+                <h4>Rating ${game.rating}<h4>
+                <span>${starRating(game.rating)}</span>
+              </div>
           </a>
       `;
         grid.appendChild(div);
