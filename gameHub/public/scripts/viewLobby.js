@@ -70,8 +70,6 @@ const fetchLobbies = (dataOverride = null) => {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-
-
     const wrapper = document.getElementById('kenburns-bg-wrapper');
 
     fetch('/api/viewLobbyBG')

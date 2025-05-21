@@ -599,7 +599,7 @@ async function main() {
 
       const validLobbyIds = lobbies.map((lobby) => lobby.lobbyId);
 
-      // 🧹 Optional: clean up any stale references
+      // Optional: clean up any stale references
       if (validLobbyIds.length !== activeLobbyIds.length) {
         await userModel.updateOne(
           { username },
@@ -611,7 +611,7 @@ async function main() {
       console.log(
         'Valid lobbies returned:',
         lobbies.map((l) => l.lobbyId)
-      ); // 🔍 Log matches
+      ); 
 
       res.json(lobbies);
     } catch (err) {
