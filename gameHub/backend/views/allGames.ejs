@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <title>All games</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/scripts/allGames.js"></script>
+    <link rel="stylesheet" href="/styles/kenburns.css" />
+    <link rel="stylesheet" href="/styles/allGames.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+
+  <body class="font-sans bg-black text-white" data-search-name="<%= searchName %>">
+    <!-- Ken Burns Background -->
+    <div
+      id="kenburns-bg-wrapper"
+      class="fixed inset-0 z-0 overflow-hidden"
+    ></div>
+    <!-- Dark overlay to soften background brightness -->
+    <div class="fixed inset-0 bg-black/70 z-10 pointer-events-none"></div>
+
+    <div class="relative z-20">
+      <!-- Navigation bar -->
+      <div
+        class="flex flex-row justify-center h-10 text-md text-white space-x-5 bg-[#000000] relative z-10"
+      >
+        <button
+          class="px-3 h-full hover:bg-gray-400 transition duration-500 ease-in-out"
+          onclick="window.location.href='/home'"
+        >
+          Home
+        </button>
+        <button
+          class="px-3 h-full hover:bg-gray-400 transition duration-500 ease-in-out"
+          onclick="window.location.href='/profile'"
+        >
+          Profile
+        </button>
+        <button
+          class="px-3 h-full hover:bg-gray-400 transition duration-500 ease-in-out"
+          onclick="window.location.href='/help'"
+        >
+          Help
+        </button>
+        <button
+          class="px-3 h-full hover:bg-gray-400 transition duration-500 ease-in-out"
+        >
+          <form class="px-3" action="/logout">
+            <input type="submit" value="Logout" />
+          </form>
+        </button>
+      </div>
+    </div>
+
+    <h1
+      class="relative z-20 text-4xl font-bold flex flex-row gap-4 text-white justify-center mx-auto flex-wrap py-4"
+    >
+      All Games
+    </h1>
+
+    <div
+      id="sidebar"
+      class="relative z-20 px-4 mx-4 bg-black/30 border border-white rounded-lg flex items-center justify-end flex-col md:flex-row gap-4 p-4"
+    >
+      <div id="search-seaction" class="w-full md:w-[40%]">
+        <form action="/search" method="post">
+          <svg
+            class="absolute left-6 top-1/9 md:top-1/2 md:-translate-y-1/4 w-5 h-5 text-gray-400 pointer-events-none"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"
+            ></path>
+          </svg>
+          <input
+            type="text"
+            name="search"
+            placeholder="Search for games"
+            id="searc-bar"
+            class="border border-black rounded-full bg-white px-4 py-1 w-full pl-10 text-black focus:ring-3"
+          />
+        </form>
+      </div>
+      <div
+        id="filter"
+        class="w-full flex flex-col items-center justify-center md:flex-row md:w-[70%] gap-5"
+      >
+        <div class="flex flex-col md:flex-row gap-2">
+          <div class="w-auto flex gap-2">
+            <label for="genre" class="text-xl">Genre:</label>
+            <select
+              id="genre"
+              class="h-7 border border-white rounded-full text-center text-black bg-white"
+            >
+              <option value="">All</option>
+            </select>
+          </div>
+
+          <div class=" flex flex-row min-w-[170px] gap-2  ">
+            <div class="min-w-[70px]">
+              <label for="ordering" class="text-xl">Sort By:</label>
+            </div>
+            <select
+              id="ordering"
+              class="h-7 border border-white rounded-full text-center text-black bg-white w-full md:pr-0"
+            >
+              <option value="">Default</option>
+              <option value="-rating">Top Rated</option>
+              <option value="-released">Newest</option>
+              <option value="name">A–Z</option>
+            </select>
+          </div>
+        </div>
+
+        <button
+          id="applyFilters"
+          class="border border-white bg-[#0a0e1a] hover:bg-gray-400 text-white rounded-lg py-1 px-2 w-[80%] transition-colors duration-300 ease-in-out"
+        >
+          Apply
+        </button>
+      </div>
+    </div>
+
+    <h1
+      class="relative z-20 text-2xl text-white font-bold mb-4 text-center pt-3"
+    >
+      Results for "<%= filters.name %>"
+    </h1>
+
+    <div class="games-list text-white relative z-20" id="game-grid">
+      
+      
+      
+      <div
+        class="game-card tilt-card bg-black/80 rounded-xl shadow-md border border-white overflow-hidden p-4 text-center text-white transform ease-in-out"
+      >
+        <h2 class="text-lg font-semibold mb-2"></h2>
+
+        <p>loading.</p>
+        
+      </div>
+      
+    </div>
+
+    <!-- Tilt + Dynamic Shadow Script -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              oswald: ['Oswald', 'sans-serif'], //oswald (title)
+              Fira: ['Fira Sans', 'sans-serif'], //oswald (title)
+            },
+          },
+        },
+      };
+
+    </script>
+
+    <div
+      class="pagination relative z-20 text-white border-white font-semibold mx-auto"
+    >
+      <button
+        class="relative z-20 bg-[#0a0e1a] hover:bg-gray-400 border rounded-l-full border-r-0 shadow-md transition transform focus:outline-none focus:ring-2 focus:ring-blue-300"
+        id="prevPage"
+      >
+        Prev</button
+      ><span
+        class="relative z-20 py-[6.3px] pb-[6.5px] bg-[#0a0e1a] shadow-md transition duration-500 ease-in-ou mt-8 transform border border-y-white border-x-0 px-4"
+        id="pageNum"
+        >Page 1</span
+      ><button
+        class="relative z-20 bg-[#0a0e1a] hover:bg-gray-400 transition duration-500 ease-in-ou border rounded-r-full border-l-0 shadow-md mt-8 transform focus:outline-none focus:ring-2 focus:ring-blue-300"
+        id="nextPage"
+      >
+        Next
+      </button>
+    </div>
+  </body>
+</html>

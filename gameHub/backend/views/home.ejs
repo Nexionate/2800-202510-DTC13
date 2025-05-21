@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200...700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              oswald: ['Oswald', 'sans-serif'], //oswald (title)
+              Fira: ['Fira Sans', 'sans-serif'], //oswald (title)
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="stylesheet" href="/styles/kenburns.css" />
+    <script src="/scripts/home.js"></script>
+
+    <title>Home Page</title>
+  </head>
+
+  <body class="-z-10 bg-black font-sans text-gray-800">
+    <div id="kenburns-bg-wrapper" class="fixed inset-0 z-0 overflow-hidden"></div>
+
+    <div class="absolute inset-0 bg-black/80 z-10 pointer-events-none"></div>
+
+    <div class="relative z-20">
+      <!-- Navigation bar -->
+      <div
+        class="flex flex-row justify-center h-10 text-md text-white space-x-5 bg-[#000000] relative z-10"
+      >
+        <button
+          class="px-3 h-full hover:bg-gray-400 transition duration-500 ease-in-out"
+          onclick="window.location.href='/home'"
+        >
+          Home
+        </button>
+        <button
+          class="px-3 h-full hover:bg-gray-400 transition duration-500 ease-in-out"
+          onclick="window.location.href='/profile'"
+        >
+          Profile
+        </button>
+        <button
+          class="px-3 h-full hover:bg-gray-400 transition duration-500 ease-in-out"
+          onclick="window.location.href='/help'"
+        >
+          Help
+        </button>
+        <button
+          class="px-3 h-full hover:bg-gray-400 transition duration-500 ease-in-out"
+        >
+          <form class="px-3" action="/logout">
+            <input type="submit" value="Logout" />
+          </form>
+        </button>
+      </div>
+    </div>
+
+    <div class="relative z-20 px-8 py-2 space-y-4">
+      <h1 class="text-5xl text-white font-bold px-6 py-3 mx-auto w-fit">
+        GameHub
+      </h1>
+
+      <form action="/search" method="post">
+        <div class="relative w-[90%] md:w-[40%] mx-auto">
+          <!-- SVG Icon inside input container -->
+          <svg
+            class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"
+            />
+          </svg>
+
+          <!-- Input field -->
+          <input
+            type="text"
+            name="search"
+            placeholder="Search..."
+            class="w-full border border-black rounded-full bg-white py-2 pl-10 pr-4"
+          />
+        </div>
+      </form>
+
+      <!-- Button Container Matching Card Width -->
+      <div class="relative z-20 mx-auto px-8 max-w-4xl">
+        <div class="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
+          <button
+            class="flex-1 text-lg bg-[#0a0e1a] px-3 py-4 rounded-xl border border-white text-white hover:bg-gray-400 transition hover:scale-[1.01] ease-in-out"
+            onclick="window.location.href='/createLobby/0'">
+            Create a Lobby
+          </button>
+      
+          <button
+            class="flex-1 text-lg bg-[#0a0e1a] px-3 py-4 rounded-xl border border-white text-white hover:bg-gray-400 transition hover:scale-[1.01] ease-in-out"
+            onclick="window.location.href='/viewLobbies'">
+            Join a Lobby
+          </button>
+      
+          <button
+            class="flex-1 text-lg bg-[#0a0e1a] px-3 py-4 rounded-xl border border-white text-white hover:bg-gray-400 transition hover:scale-[1.01] ease-in-out"
+            onclick="window.location.href='/yourActiveLobby'">
+            Your Active Lobby
+          </button>
+        </div>
+        </div>
+
+      <script>
+        async function askAIMagic() {
+          const topic = document.getElementById('aiInput').value;
+          const res = await fetch('/magic', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ topic }),
+          });
+
+          const data = await res.json();
+          document.getElementById('aiOutput').innerText =
+            data.result || 'No magic.';
+        }
+      </script>
+
+      <div
+        class="relative z-20 p-2 gap-4 justify-center mx-auto flex-wrap rounded-xl space-y-1 bg-transparent shadow-md"
+      >
+        <hr class="border-t-sky-100" />
+        <div class="px-8 py-4">
+          <h2
+            class="flex justify-center items-center text-3xl text-white font-bold mb-4 py-5"
+          >
+            Top 10 Popular Games
+          </h2>
+
+          <% if (games && games.length> 0) { %>
+          <div
+            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
+          >
+            <% games.forEach(game=> { %>
+            <div
+              class="relative tilt-card p-4 rounded-xl text-center shadow-md text-white/90 transform hover:scale-101 active:scale-98 ease-in-out border border-white overflow-hidden"
+              data-tilt-id="<%= game.id %>"
+            >
+              <div class="absolute inset-0 bg-black/70 rounded-xl -z-10"></div>
+              <h3 class="text-lg font-semibold mb-2"><%= game.name %></h3>
+
+              <p class="text-sm mb-2 text-white/70">
+                Rating: <%= game.rating %>
+              </p>
+              <!-- starts -->
+              <span>
+                <% const maxStars = 5; const fullStars =
+                Math.floor(game.rating); const halfStar = (game.rating % 1) >=
+                0.5; const emptyStars = maxStars - fullStars - (halfStar ? 1 :
+                0); for(let i = 0; i < fullStars; i++) { %>
+                <i class="fas fa-star" style="color: gold"></i>
+                <% } %> <% if (halfStar) { %>
+                <i class="fas fa-star-half-alt" style="color: gold"></i>
+                <% } %> <% for(let i = 0; i < emptyStars; i++) { %>
+                <i class="far fa-star" style="color: lightgray"></i>
+                <% } %>
+              </span>
+
+              <% if (game.background_image) { %>
+              <a href="/gameDescription/<%= game.id %>">
+                <img
+                  src="<%= game.background_image %>"
+                  alt="<%= game.name %>"
+                  class="w-full h-40 object-cover rounded"
+                />
+              </a>
+              <% } %>
+            </div>
+
+            <% }) %>
+          </div>
+          <% } else { %>
+          <p>No games available.</p>
+          <% } %>
+
+          <div
+            class="flex flex-col items-center justify-center text-center space-y-2"
+          >
+            <form action="/search" method="post" class="m-0 p-0">
+              <button
+                class="bg-[#0a0e1a] px-6 py-3 my-2 rounded-xl border border-white text-white hover:bg-slate-500 transition hover:scale-[1.01] ease-in-out"
+                onclick="window.location.href='/allGames'"
+              >
+                View All Games
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="text-center">
+        <input
+          type="text"
+          id="aiInput"
+          placeholder="Enter a topic..."
+          class="text-black bg-white border border-black rounded-full px-4 py-2 w-72"
+        />
+        <button
+          onclick="askAIMagic()"
+          class="text-white border border-white bg-[#0a0e1a] hover:bg-indigo-700 px-4 py-2 rounded-xl"
+        >
+          🧙 Magic Wand
+        </button>
+        <div id="aiOutput" class="text-white mt-4"></div>
+      </div>
+
+    </div>
+  </body>
+</html>

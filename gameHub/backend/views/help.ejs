@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="/styles/kenburns.css" />
+    <script src="/scripts/help.js"></script>
+  </head>
+
+  <body class="relative bg-gray-100 font-sans text-gray-800">
+    <!-- Ken Burns Background -->
+    <div id="kenburns-bg-wrapper" class="fixed inset-0 z-0 overflow-hidden"></div>
+    <!-- Dark overlay to soften background brightness -->
+    <div class="fixed inset-0 bg-black/70 z-10 pointer-events-none"></div>
+
+    <div class="relative z-20">
+      <!-- Navigation bar -->
+      <div
+        class="flex flex-row justify-center h-10 text-md text-white space-x-5 bg-[#000000] relative z-10"
+      >
+        <button
+          class="px-3 h-full hover:bg-gray-400 transition duration-500 ease-in-out"
+          onclick="window.location.href='/home'"
+        >
+          Home
+        </button>
+        <button
+          class="px-3 h-full hover:bg-gray-400 transition duration-500 ease-in-out"
+          onclick="window.location.href='/profile'"
+        >
+          Profile
+        </button>
+        <button
+          class="px-3 h-full hover:bg-gray-400 transition duration-500 ease-in-out"
+          onclick="window.location.href='/help'"
+        >
+          Help
+        </button>
+        <button
+          class="px-3 h-full hover:bg-gray-400 transition duration-500 ease-in-out"
+        >
+          <form class="px-3" action="/logout">
+            <input type="submit" value="Logout" />
+          </form>
+        </button>
+      </div>
+    </div>
+
+    <div
+      class="relative z-10 flex flex-row mx-auto justify-center max-w-4xl pt-5 px-4"
+    >
+      <div
+        class="space-y-4 px-5 py-3 bg-[#0a0e1a] text-white border border-white shadow rounded-lg"
+      >
+        <div class="flex flex-row justify-center">
+          <h1 class="text-3xl font-bold text-center">Help</h1>
+        </div>
+
+        <div class="space-y-2 pb-5">
+          <h1 class="font-bold text-xl">Creating a Lobby</h1>
+          <p>You can create a lobby in two ways:</p>
+          <p>
+            - Click a game title, then select
+            <span class="text-green-500">"Create Lobby"</span>
+          </p>
+          <p>
+            - Click <span class="text-green-500">"Create Lobby"</span> from the
+            home page
+          </p>
+          <p>
+            Your active lobby will appear on the home page under
+            <span class="text-green-500">"Active Lobby"</span>
+          </p>
+          <p class="text-red-800">You can only host one lobby at a time.</p>
+        </div>
+
+        <div class="space-y-2">
+          <h1 class="font-bold text-xl">Joining a Lobby</h1>
+          <p>You can join a lobby in two ways:</p>
+          <p>
+            - Click a game title, then select
+            <span class="text-green-500">"Join Lobby"</span>
+          </p>
+          <p>
+            - Click <span class="text-green-500">"Join Lobby"</span> from the
+            home page to view all lobbies
+          </p>
+          <p>You can leave a lobby at any time.</p>
+          <p class="text-red-800">You can only join one lobby at a time!</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-row justify-center">
+      <button
+        class="bg-[#0a0e1a] hover:bg-gray-400 border relative z-20 border-white text-white px-4 py-2 my-6 rounded"
+        onclick="window.location.href='/home'"
+      >
+        Back to Home
+      </button>
+    </div>
+  </body>
+</html>

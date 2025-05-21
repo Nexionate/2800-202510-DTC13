@@ -1,0 +1,17 @@
+      #gameSearch {
+        box-sizing: border-box;
+        width: 100%;
+      }
+
+      #searchResults {
+        box-sizing: border-box;
+        width: 100%;
+        max-height: 192px;
+        overflow-y: auto;
+        border: 1px solid #d1d5db;
+        border-radius: 0.375rem;
+        padding: 0.25rem 0;
+        background-color: white;
+        z-index: 50;
+        position: absolute;
+      }
