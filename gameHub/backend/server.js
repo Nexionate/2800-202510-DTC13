@@ -5,13 +5,8 @@ const bcrypt = require('bcrypt');
 const app = express();
 const path = require('path');
 const { type } = require('os');
-// const fetch = require('node-fetch');
-// const { default: fetch } = await import('node-fetch');
 const fetch = (...args) =>
-  import('node-fetch').then(({ default: fetch }) => fetch(...args));
-
-// api key: f61c15c68f3246a3aeebcfa53cdef84f
-
+import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const apiKey = 'f61c15c68f3246a3aeebcfa53cdef84f';
 
 
@@ -142,7 +137,7 @@ async function main() {
 
     await newUser.save();
 
-    // ✅ Fetch games for home page
+    // Fetch games for home page
     try {
       const response = await fetch(
         `https://api.rawg.io/api/games?key=${apiKey}&tags=co-op&ordering=-rating&page_size=10`
@@ -150,11 +145,6 @@ async function main() {
       const data = await response.json();
       const topGames = data.results;
 
-      // ✅ Render home with games and username
-      // res.render('home.ejs', {
-      //   username,
-      //   games: topGames,
-      // });
       res.redirect('/login');
     } catch (error) {
       console.error('Error fetching games after register:', error);
@@ -237,12 +227,14 @@ async function main() {
       role: req.session.user.role,
     });
   });
+
   app.get('/createLobby', (req, res) => {
     res.render('createLobby.ejs', {
       username: req.session.user.username,
       role: req.session.user.role,
     });
   });
+
   app.get('/profile', async (req, res) => {
     try {
       const username = req.session?.user?.username;
@@ -418,7 +410,7 @@ async function main() {
 
       const lobby = await Lobby.findOne({ lobbyId });
       if (!lobby) return res.status(404).send('Lobby not found');
-
+      
       if (lobby.owner === username) {
         // Owner is leaving → disband the lobby
         await Lobby.deleteOne({ lobbyId });
@@ -446,35 +438,35 @@ async function main() {
     }
   });
 
-app.get('/lobbies', async (req, res) => {
-  try {
-    const username = req.session?.user?.username;
-    if (!username) return res.status(401).send('User not authenticated');
+  app.get('/lobbies', async (req, res) => {
+    try {
+      const username = req.session?.user?.username;
+      if (!username) return res.status(401).send('User not authenticated');
 
-    const search = req.query.search?.toLowerCase();
-    const tags = req.query.tags?.split(",").map(tag => tag.toLowerCase());
+      const search = req.query.search?.toLowerCase();
+      const tags = req.query.tags?.split(",").map(tag => tag.toLowerCase());
 
-    const query = { user: { $ne: username } };
+      const query = { user: { $ne: username } };
 
-    if (search) {
-      query.$or = [
-        { lobbyName: { $regex: search, $options: "i" } },
-        { gameName: { $regex: search, $options: "i" } },
-        { lobbyId: { $regex: search, $options: "i" } },
-      ];
+      if (search) {
+        query.$or = [
+          { lobbyName: { $regex: search, $options: "i" } },
+          { gameName: { $regex: search, $options: "i" } },
+          { lobbyId: { $regex: search, $options: "i" } },
+        ];
+      }
+
+      if (tags && tags.length > 0) {
+        query.tags = { $in: tags };
+      }
+
+      const lobbies = await Lobby.find(query);
+      res.json(lobbies);
+    } catch (err) {
+      console.error("Error fetching lobbies:", err.message);
+      res.status(500).send("Internal server error");
     }
-
-    if (tags && tags.length > 0) {
-      query.tags = { $in: tags };
-    }
-
-    const lobbies = await Lobby.find(query);
-    res.json(lobbies);
-  } catch (err) {
-    console.error("Error fetching lobbies:", err.message);
-    res.status(500).send("Internal server error");
-  }
-});
+  });
 
 
   app.post('/joinLobby/:id', async (req, res) => {
@@ -575,6 +567,7 @@ app.get('/lobbies', async (req, res) => {
       return 'Unknown Region';
     }
   }
+
   app.get('/api/activeLobbies', async (req, res) => {
     try {
       const username = req.session?.user?.username;
@@ -703,51 +696,51 @@ app.get('/lobbies', async (req, res) => {
 
   app.get('/api/homeBG', async (req, res) => {
 
-  try {
-    const response = await fetch(`https://api.rawg.io/api/games?key=${apiKey}&tags=multiplayer,co-op&page_size=10&page=3`);
-    const data = await response.json();
-    res.json(data);
-  } catch (err) {
-    console.error('Error fetching games:', err);
-    res.status(500).json({ error: 'Failed to fetch data' });
-  }
-});
+    try {
+      const response = await fetch(`https://api.rawg.io/api/games?key=${apiKey}&tags=multiplayer,co-op&page_size=10&page=3`);
+      const data = await response.json();
+      res.json(data);
+    } catch (err) {
+      console.error('Error fetching games:', err);
+      res.status(500).json({ error: 'Failed to fetch data' });
+    }
+  });
 
   app.get('/api/viewLobbyBG', async (req, res) => {
 
-  try {
-    const response = await fetch(`https://api.rawg.io/api/games?key=${apiKey}&tags=multiplayer,co-op&page_size=10&page=6`);
-    const data = await response.json();
-    res.json(data);
-  } catch (err) {
-    console.error('Error fetching games:', err);
-    res.status(500).json({ error: 'Failed to fetch data' });
-  }
-});
+    try {
+      const response = await fetch(`https://api.rawg.io/api/games?key=${apiKey}&tags=multiplayer,co-op&page_size=10&page=6`);
+      const data = await response.json();
+      res.json(data);
+    } catch (err) {
+      console.error('Error fetching games:', err);
+      res.status(500).json({ error: 'Failed to fetch data' });
+    }
+  });
 
   app.get('/api/profileBG', async (req, res) => {
 
-  try {
-    const response = await fetch(`https://api.rawg.io/api/games?key=${apiKey}&tags=multiplayer,co-op&page_size=10&page=4`);
-    const data = await response.json();
-    res.json(data);
-  } catch (err) {
-    console.error('Error fetching games:', err);
-    res.status(500).json({ error: 'Failed to fetch data' });
-  }
-});
+    try {
+      const response = await fetch(`https://api.rawg.io/api/games?key=${apiKey}&tags=multiplayer,co-op&page_size=10&page=4`);
+      const data = await response.json();
+      res.json(data);
+    } catch (err) {
+      console.error('Error fetching games:', err);
+      res.status(500).json({ error: 'Failed to fetch data' });
+    }
+  });
 
   app.get('/api/helpBG', async (req, res) => {
 
-  try {
-    const response = await fetch(`https://api.rawg.io/api/games?key=${apiKey}&tags=multiplayer,co-op&page_size=10&page=8`);
-    const data = await response.json();
-    res.json(data);
-  } catch (err) {
-    console.error('Error fetching games:', err);
-    res.status(500).json({ error: 'Failed to fetch data' });
-  }
-});
+    try {
+      const response = await fetch(`https://api.rawg.io/api/games?key=${apiKey}&tags=multiplayer,co-op&page_size=10&page=8`);
+      const data = await response.json();
+      res.json(data);
+    } catch (err) {
+      console.error('Error fetching games:', err);
+      res.status(500).json({ error: 'Failed to fetch data' });
+    }
+  });
 
   app.get('/api/createLobbyBG', async (req, res) => {
 
@@ -763,75 +756,75 @@ app.get('/lobbies', async (req, res) => {
 
   app.get('/api/allGameBG', async (req, res) => {
 
-  try {
-    const response = await fetch(`https://api.rawg.io/api/games?key=${apiKey}&tags=multiplayer,co-op&page_size=10&page=2`);
-    const data = await response.json();
-    res.json(data);
-  } catch (err) {
-    console.error('Error fetching games:', err);
-    res.status(500).json({ error: 'Failed to fetch data' });
-  }
-});
+    try {
+      const response = await fetch(`https://api.rawg.io/api/games?key=${apiKey}&tags=multiplayer,co-op&page_size=10&page=2`);
+      const data = await response.json();
+      res.json(data);
+    } catch (err) {
+      console.error('Error fetching games:', err);
+      res.status(500).json({ error: 'Failed to fetch data' });
+    }
+  });
 
-app.get('/api/game/:gameId', async (req, res) => {
-  const gameId = req.params.gameId;
+  app.get('/api/game/:gameId', async (req, res) => {
+    const gameId = req.params.gameId;
 
-  try {
-    const response = await fetch(`https://api.rawg.io/api/games/${gameId}?key=${apiKey}`);
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    console.error('Error fetching game data:', error);
-    res.status(500).json({ error: 'Failed to fetch game data' });
-  }
-});
+    try {
+      const response = await fetch(`https://api.rawg.io/api/games/${gameId}?key=${apiKey}`);
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error('Error fetching game data:', error);
+      res.status(500).json({ error: 'Failed to fetch game data' });
+    }
+  });
 
-app.get('/api/searchGamesName', async (req, res) => {
-  const query = req.query.q;
-  console.log('Search query:', query);
+  app.get('/api/searchGamesName', async (req, res) => {
+    const query = req.query.q;
+    console.log('Search query:', query);
 
-  if (!query || query.length < 2) {
-    return res.status(400).json({ error: 'Query too short' });
-  }
+    if (!query || query.length < 2) {
+      return res.status(400).json({ error: 'Query too short' });
+    }
 
-  try {
-    const response = await fetch(
-      `https://api.rawg.io/api/games?key=${apiKey}&search=${query}&tags=multiplayer,co-op&page_size=10`
-    );
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    console.error('Error searching games:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
+    try {
+      const response = await fetch(
+        `https://api.rawg.io/api/games?key=${apiKey}&search=${query}&tags=multiplayer,co-op&page_size=10`
+      );
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error('Error searching games:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
 
-app.get('/api/genres', async (req, res) => {
-  try {
-    const response = await fetch(`https://api.rawg.io/api/genres?key=${apiKey}`);
-    const data = await response.json();
-    res.json(data);
-  } catch (err) {
-    console.error('Genre fetch error:', err);
-    res.status(500).json({ error: 'Genre fetch failed' });
-  }
-});
+  app.get('/api/genres', async (req, res) => {
+    try {
+      const response = await fetch(`https://api.rawg.io/api/genres?key=${apiKey}`);
+      const data = await response.json();
+      res.json(data);
+    } catch (err) {
+      console.error('Genre fetch error:', err);
+      res.status(500).json({ error: 'Genre fetch failed' });
+    }
+  });
 
-app.get('/api/games', async (req, res) => {
-  const { page = 1, genre = '', ordering = '', search = '' } = req.query;
+  app.get('/api/games', async (req, res) => {
+    const { page = 1, genre = '', ordering = '', search = '' } = req.query;
 
-  let url = `https://api.rawg.io/api/games?key=${apiKey}&page_size=20&page=${page}&tags=multiplayer,co-op`;
-  if (genre) url += `&genres=${genre}`;
-  if (ordering) url += `&ordering=${ordering}`;
-  if (search && search !== 'All Games') url += `&search=${encodeURIComponent(search)}`;
+    let url = `https://api.rawg.io/api/games?key=${apiKey}&page_size=20&page=${page}&tags=multiplayer,co-op`;
+    if (genre) url += `&genres=${genre}`;
+    if (ordering) url += `&ordering=${ordering}`;
+    if (search && search !== 'All Games') url += `&search=${encodeURIComponent(search)}`;
 
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-    res.json(data);
-  } catch (err) {
-    console.error('Game fetch error:', err);
-    res.status(500).json({ error: 'Game fetch failed' });
-  }
-});
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      res.json(data);
+    } catch (err) {
+      console.error('Game fetch error:', err);
+      res.status(500).json({ error: 'Game fetch failed' });
+    }
+  });
 }
