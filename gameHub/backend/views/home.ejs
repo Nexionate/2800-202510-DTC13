@@ -85,11 +85,10 @@
       </h1>
 
       <form action="/search" method="post">
-        <!-- Use a wrapper div to contain the input and icon -->
         <div class="relative w-[90%] md:w-[40%] mx-auto">
           <!-- SVG Icon inside input container -->
           <svg
-            class="absolute left-3 top-1/2 -translate-y-[5px] w-5 h-5 text-gray-400 pointer-events-none"
+            class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
             fill="none"
             stroke="currentColor"
             stroke-width="2"
@@ -115,7 +114,6 @@
 
       <!-- Button Container Matching Card Width -->
       <div class="relative z-20 mx-auto px-8 max-w-4xl">
-        <!-- Make flex direction change based on screen size -->
         <div class="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
           <button
             class="flex-1 text-lg bg-[#0a0e1a] px-3 py-4 rounded-xl border border-white text-white hover:bg-gray-400 transition hover:scale-[1.01] ease-in-out"
@@ -212,9 +210,6 @@
           <div
             class="flex flex-col items-center justify-center text-center space-y-2"
           >
-            <!-- <p class="text-slate-400 text-sm m-8 p-0">
-                  See what people are playing!
-                </p> -->
             <form action="/search" method="post" class="m-0 p-0">
               <button
                 class="bg-[#0a0e1a] px-6 py-3 my-2 rounded-xl border border-white text-white hover:bg-slate-500 transition hover:scale-[1.01] ease-in-out"
