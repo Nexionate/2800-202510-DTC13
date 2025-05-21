@@ -38,10 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Load genres (or platforms, etc.)
   fetchGames(currentPage)
   loadFilterOptions();
-//   renderGames(initialGames)
 });
 
 function starRating(rating) {
@@ -80,6 +78,7 @@ async function loadFilterOptions() {
 async function fetchGames(page = 1) {
   const genre = document.getElementById('genre').value;
   const ordering = document.getElementById('ordering').value;
+  searchName = document.body.dataset.searchName || ''
 
   const params = new URLSearchParams({
     page,
@@ -101,32 +100,31 @@ async function fetchGames(page = 1) {
 function populateSelect(id, items) {
     const select = document.getElementById(id);
     items.forEach((item) => {
-    const option = document.createElement('option');
-    option.value = item.slug || item.id;
-    option.textContent = item.name;
-    select.appendChild(option);
+      const option = document.createElement('option');
+      option.value = item.slug || item.id;
+      option.textContent = item.name;
+      select.appendChild(option);
     });
 }
 
-
 function renderGames(games) {
-    const grid = document.getElementById('game-grid');
-    grid.innerHTML = ''; // Clear current content
+  const grid = document.getElementById('game-grid');
+  grid.innerHTML = ''; // Clear current content
 
-    games.forEach((game) => {
-    const div = document.createElement('div');
-    div.classList.add('game-card');
-    
-    div.innerHTML = `
-        <a href="/gameDescription/${game.id}">
-            <img class="game-image" src="${game.background_image}" alt="${game.name}"/>
-            <div id="rating">
-            <h2><b>${game.name}</b></h2>
-            <h4>Rating ${game.rating}<h4>
-            <span>${starRating(game.rating)}</span>
-            </div>
-        </a>
-    `;
-    grid.appendChild(div);
-    });
+  games.forEach((game) => {
+  const div = document.createElement('div');
+  div.classList.add('game-card');
+  
+  div.innerHTML = `
+      <a href="/gameDescription/${game.id}">
+          <img class="game-image" src="${game.background_image}" alt="${game.name}"/>
+          <div id="rating">
+          <h2><b>${game.name}</b></h2>
+          <h4>Rating ${game.rating}<h4>
+          <span>${starRating(game.rating)}</span>
+          </div>
+      </a>
+  `;
+  grid.appendChild(div);
+  });
 }
