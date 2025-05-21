@@ -630,6 +630,7 @@ app.get('/lobbies', async (req, res) => {
   app.use(express.urlencoded());
   app.post('/search', async (req, res) => {
     try {
+      // Does not account for genre and sort by filters
       let searchName = req.body.search?.trim();
       let apiUrl = `https://api.rawg.io/api/games?key=${apiKey}&page_size=20&tags=co-op`;
 
