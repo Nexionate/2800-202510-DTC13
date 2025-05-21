@@ -766,6 +766,18 @@ async function main() {
     }
   });
 
+   app.get('/api/loginBG', async (req, res) => {
+
+    try {
+      const response = await fetch(`https://api.rawg.io/api/games?key=${apiKey}&tags=multiplayer,co-op&page_size=10`);
+      const data = await response.json();
+      res.json(data);
+    } catch (err) {
+      console.error('Error fetching games:', err);
+      res.status(500).json({ error: 'Failed to fetch data' });
+    }
+  });
+
   app.get('/api/game/:gameId', async (req, res) => {
     const gameId = req.params.gameId;
 
