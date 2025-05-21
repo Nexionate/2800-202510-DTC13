@@ -68,3 +68,22 @@ const fetchLobbies = (dataOverride = null) => {
     .then(data => fetchLobbies(data))  
     .catch(err => console.error("Filter error:", err));
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+
+
+    const wrapper = document.getElementById('kenburns-bg-wrapper');
+
+    fetch('/api/viewLobbyBG')
+    .then(res => res.json())
+    .then(data => {
+        data.results.forEach(game => {
+        if (game.background_image) {
+            const bg = document.createElement('div');
+            bg.className = 'kenburns-image';
+            bg.style.backgroundImage = `url(${game.background_image})`;
+            wrapper.appendChild(bg);
+        }
+        });
+    });
+});

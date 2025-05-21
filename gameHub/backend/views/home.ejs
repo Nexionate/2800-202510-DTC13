@@ -22,6 +22,7 @@
       href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200...700&display=swap"
       rel="stylesheet"
     />
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
         theme: {
@@ -34,91 +35,15 @@
         },
       };
     </script>
-    <style>
-      @keyframes kenburns {
-        0% {
-          transform: scale(1) translate(0, 0);
-          opacity: 0;
-        }
-
-        10% {
-          opacity: 1;
-        }
-
-        90% {
-          opacity: 1;
-        }
-
-        100% {
-          transform: scale(1.1) translate(-3%, -3%);
-          opacity: 0;
-        }
-      }
-
-      .kenburns-image {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-size: cover;
-        background-position: center;
-        animation: kenburns 27s ease-in-out infinite;
-        opacity: 0;
-        filter: brightness(1.3);
-        /* Increase brightness by 30% */
-        z-index: -1;
-      }
-
-      .kenburns-image:nth-child(1) {
-        animation-delay: 0s;
-      }
-
-      .kenburns-image:nth-child(2) {
-        animation-delay: 3s;
-      }
-
-      .kenburns-image:nth-child(3) {
-        animation-delay: 6s;
-      }
-
-      .kenburns-image:nth-child(4) {
-        animation-delay: 9s;
-      }
-
-      .kenburns-image:nth-child(5) {
-        animation-delay: 12s;
-      }
-
-      .kenburns-image:nth-child(6) {
-        animation-delay: 15s;
-      }
-
-      .kenburns-image:nth-child(7) {
-        animation-delay: 18s;
-      }
-
-      .kenburns-image:nth-child(8) {
-        animation-delay: 21s;
-      }
-
-      .kenburns-image:nth-child(9) {
-        animation-delay: 24s;
-      }
-
-      .kenburns-image:nth-child(10) {
-        animation-delay: 27s;
-      }
-    </style>
+    <link rel="stylesheet" href="/styles/kenburns.css" />
+    <script src="/scripts/home.js"></script>
 
     <title>Home Page</title>
   </head>
 
   <body class="-z-10 bg-black font-sans text-gray-800">
-    <div
-      id="kenburns-bg-wrapper"
-      class="absolute inset-0 overflow-hidden z-0"
-    ></div>
+    <div id="kenburns-bg-wrapper" class="fixed inset-0 z-0 overflow-hidden"></div>
+
     <div class="absolute inset-0 bg-black/80 z-10 pointer-events-none"></div>
 
     <div class="relative z-20">
@@ -302,28 +227,6 @@
         </div>
       </div>
 
-      <!-- Tilt effect script -->
-      <script>
-        document.querySelectorAll('.tilt-card').forEach((card) => {
-          card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-
-            const rotateX = -(y - centerY) / 20;
-            const rotateY = (x - centerX) / 20;
-
-            card.style.transform = `perspective(600px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.01)`;
-          });
-
-          card.addEventListener('mouseleave', () => {
-            card.style.transform = '';
-          });
-        });
-      </script>
 
       <div class="text-center">
         <input
@@ -341,50 +244,6 @@
         <div id="aiOutput" class="text-white mt-4"></div>
       </div>
 
-      <script>
-        const apiKey = 'f61c15c68f3246a3aeebcfa53cdef84f';
-        const wrapper = document.getElementById('kenburns-bg-wrapper');
-
-        fetch(
-          `https://api.rawg.io/api/games?key=${apiKey}&tags=multiplayer,co-op&page_size=10&page=3`
-        )
-          .then((res) => res.json())
-          .then((data) => {
-            data.results.forEach((game, index) => {
-              if (game.background_image) {
-                const bg = document.createElement('div');
-                bg.className = 'kenburns-image';
-                bg.style.backgroundImage = `url(${game.background_image})`;
-                wrapper.appendChild(bg);
-              }
-            });
-          });
-
-        // calcualte how many stars
-        function starRating(rating) {
-          const maxStars = 5;
-          const fullStars = Math.floor(rating);
-          const halfStar = rating % 1 >= 0.5;
-          const emptyStars = maxStars - fullStars - (halfStar ? 1 : 0);
-
-          let starHTML = '';
-
-          for (let i = 0; i < fullStars; i++) {
-            starHTML += '<i class="fas fa-star" style="color: gold;"></i>';
-          }
-
-          if (halfStar) {
-            starHTML +=
-              '<i class="fas fa-star-half-alt" style="color: gold;"></i>';
-          }
-
-          for (let i = 0; i < emptyStars; i++) {
-            starHTML += '<i class="far fa-star" style="color: lightgray;"></i>';
-          }
-
-          return starHTML;
-        }
-      </script>
     </div>
   </body>
 </html>
